@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
+<title>여행 코스 찾기 🗺️</title>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#fff9f5;--card:#ffffff;--border:#f0e6da;--mid:#aaa;--p1:#ff8fab;--p2:#ffc8dd;--p3:#bde0fe;--p4:#a2d2ff;--p5:#caffbf;--dark:#3d3035}
+body{background:var(--bg);font-family:'Noto Sans KR',sans-serif;color:var(--dark);max-width:480px;margin:0 auto;min-height:100dvh;overflow-x:hidden}
+.scr{display:none}.scr.on{display:block}
+.hero{background:linear-gradient(135deg,#ffb3c6 0%,#ffc8dd 40%,#bde0fe 75%,#a2d2ff 100%);padding:52px 24px 40px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-30px;right:-30px;width:160px;height:160px;background:rgba(255,255,255,.22);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-20px;width:120px;height:120px;background:rgba(255,255,255,.18);border-radius:50%}
+.hbg{display:inline-flex;background:#fff;color:var(--p1);font-family:'Jua',cursive;font-size:.75rem;letter-spacing:.5px;padding:5px 14px;border-radius:99px;margin-bottom:16px;position:relative;z-index:1;box-shadow:0 2px 8px rgba(255,143,171,.3)}
+.hero h1{font-family:'Jua',cursive;font-size:2.4rem;color:#fff;line-height:1.2;position:relative;z-index:1;letter-spacing:-1px;text-shadow:0 2px 12px rgba(255,107,143,.2)}
+.hero h1 em{font-style:normal;color:rgba(255,255,255,.95)}
+.hero p{color:rgba(255,255,255,.85);font-size:.84rem;margin-top:10px;position:relative;z-index:1}
+.wv{width:100%;overflow:hidden;line-height:0;background:linear-gradient(135deg,#ffc8dd,#bde0fe)}
+.wv svg{display:block;width:100%;height:36px}
+.sw{padding:28px 20px 100px}
+.dots{display:flex;gap:8px;margin-bottom:26px;justify-content:center}
+.dot{width:8px;height:8px;border-radius:50%;background:#f0d5e0;transition:all .3s}
+.dot.on{width:28px;border-radius:4px;background:linear-gradient(90deg,var(--p1),var(--p4))}
+.dot.dn{background:var(--p5)}
+.qb{background:var(--card);border-radius:24px;padding:24px 20px;box-shadow:0 2px 0 #f7dce8,4px 6px 0 #f7dce8;border:1.5px solid #fce4ec;animation:pop .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes pop{from{opacity:0;transform:scale(.93) translateY(14px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.qchip{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 12px;border-radius:99px;margin-bottom:12px}
+.qb h2{font-family:'Jua',cursive;font-size:1.3rem;line-height:1.4;margin-bottom:18px}
+/* 2열 그리드 옵션 */
+.olist{display:flex;flex-direction:column;gap:10px}
+.olist.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ob{background:#fff9fb;border:2px solid #fce4ec;border-radius:16px;padding:13px 14px;cursor:pointer;display:flex;align-items:center;gap:10px;font-family:'Noto Sans KR',sans-serif;font-size:.86rem;font-weight:500;color:var(--dark);text-align:left;-webkit-appearance:none;width:100%;transition:all .18s}
+.ob:active{transform:scale(.97)}
+.oi{font-size:1.4rem;flex-shrink:0}
+.ot{flex:1;line-height:1.3;min-width:0}
+.os{font-size:.68rem;color:var(--mid);display:block;margin-top:2px;font-weight:400}
+.oc{width:20px;height:20px;border-radius:50%;border:2px solid #f0d5e0;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.68rem;color:#fff;transition:all .18s}
+/* 슬라이더 */
+.sb{margin-top:4px}
+.sd{text-align:center;margin-bottom:22px}
+.sv{font-family:'Jua',cursive;font-size:4rem;line-height:1;background:linear-gradient(135deg,var(--p1),var(--p4));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.su{font-size:.8rem;color:var(--mid);margin-top:6px}
+.st{display:flex;align-items:center;gap:12px}
+.sl{font-size:.7rem;color:var(--mid);font-weight:600;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;height:8px;background:linear-gradient(90deg,var(--p1),var(--p3));border-radius:99px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--p1);cursor:pointer;box-shadow:0 2px 10px rgba(255,143,171,.4);transition:transform .15s}
+input[type=range]::-webkit-slider-thumb:active{transform:scale(1.2)}
+.sm{display:flex;justify-content:space-between;margin-top:8px}
+.sm span{font-size:.62rem;color:var(--mid)}
+.nb{width:100%;margin-top:18px;background:linear-gradient(135deg,var(--p1),#ff6b9d 50%,var(--p4) 100%);color:#fff;border:none;border-radius:16px;padding:17px;font-family:'Jua',cursive;font-size:1.1rem;cursor:pointer;-webkit-appearance:none;box-shadow:0 4px 16px rgba(255,143,171,.45);transition:all .2s}
+.nb:active{transform:scale(.98);box-shadow:0 2px 8px rgba(255,143,171,.3)}
+.nb:disabled{opacity:.3;cursor:not-allowed;transform:none;box-shadow:none}
+/* 결과 */
+#R{padding-bottom:80px}
+.rh{padding:52px 24px 50px;text-align:center;position:relative;overflow:hidden}
+.rh::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 70% 30%,rgba(255,255,255,.15),transparent 60%)}
+.re{font-size:3.6rem;display:block;margin-bottom:12px;animation:bop .6s cubic-bezier(.34,1.56,.64,1);position:relative;z-index:1}
+@keyframes bop{0%{transform:scale(.5) translateY(20px)}60%{transform:scale(1.15) translateY(-4px)}100%{transform:scale(1) translateY(0)}}
+.rt{font-family:'Jua',cursive;font-size:1.9rem;color:#fff;line-height:1.2;position:relative;z-index:1;text-shadow:0 2px 12px rgba(0,0,0,.15)}
+.rs{color:rgba(255,255,255,.8);font-size:.84rem;margin-top:8px;position:relative;z-index:1}
+.rm{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:16px;position:relative;z-index:1}
+.rc{background:rgba(255,255,255,.25);color:#fff;font-size:.72rem;font-weight:700;padding:5px 13px;border-radius:99px}
+.rw{width:100%;overflow:hidden;line-height:0}
+.rw svg{display:block;width:100%;height:32px}
+.rb{padding:0 16px}
+.sh{font-family:'Jua',cursive;font-size:1.15rem;margin:26px 0 14px;display:flex;align-items:center;gap:8px}
+.sn{width:26px;height:26px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.72rem;color:#fff;font-weight:700;flex-shrink:0}
+/* 타임라인 */
+.tl{display:flex;flex-direction:column;gap:12px}
+.ti{background:var(--card);border-radius:18px;padding:18px 18px 18px 20px;border:1.5px solid var(--border);box-shadow:3px 4px 0 #f0e0e8;display:flex;gap:14px;animation:slr .45s ease both}
+.ti:nth-child(1){animation-delay:.06s}.ti:nth-child(2){animation-delay:.14s}.ti:nth-child(3){animation-delay:.22s}.ti:nth-child(4){animation-delay:.30s}.ti:nth-child(5){animation-delay:.38s}.ti:nth-child(6){animation-delay:.44s}
+/* optional 스팟 표시 */
+.ti.opt-stop{border-style:dashed;border-color:var(--p2);background:#fffcfd}
+.ti.opt-stop::before{content:'✨';font-size:.75rem;position:absolute;right:12px;top:12px}
+.ti{position:relative}
+@keyframes slr{from{opacity:0;transform:translateX(-14px)}to{opacity:1;transform:translateX(0)}}
+.tc{display:flex;flex-direction:column;align-items:center;gap:5px;flex-shrink:0;padding-top:2px}
+.tcr{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem}
+.tl2{font-size:.6rem;font-weight:700;color:var(--mid);white-space:nowrap}
+.tf{flex:1;min-width:0}
+.tty{font-size:.62rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:5px}
+.tn{font-family:'Jua',cursive;font-size:1rem;margin-bottom:6px;line-height:1.3}
+.td{font-size:.82rem;color:#777;line-height:1.7;margin-bottom:10px}
+.tg{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.tgi{background:var(--bg);border:1px solid var(--border);border-radius:99px;padding:3px 10px;font-size:.68rem;color:#999}
+.tst{font-size:.76rem;font-weight:700;margin-left:auto}
+.tcost{font-size:.72rem;color:var(--mid);margin-left:6px}
+/* 예산 조절 */
+.bc{background:var(--card);border-radius:18px;padding:20px;border:1.5px solid var(--border);box-shadow:3px 4px 0 #f0e0e8;margin-bottom:12px}
+.bgr{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.brow{background:var(--bg);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.bl{font-size:.7rem;color:var(--mid)}.bv{font-family:'Jua',cursive;font-size:1.05rem}
+.adj{background:linear-gradient(135deg,#ffeef5 0%,#e8f4ff 100%);border-radius:16px;padding:18px;border:1.5px solid #fcd5e0}
+.adj-title{font-size:.68rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--p1);margin-bottom:14px}
+.adj-display{display:flex;align-items:center;gap:8px;margin-bottom:16px}
+.adj-num-wrap{display:flex;align-items:baseline;gap:3px;flex:1}
+.adj-num{font-family:'Jua',cursive;font-size:2.8rem;line-height:1;background:linear-gradient(135deg,var(--p1),var(--p4));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.adj-unit{font-size:.85rem;color:var(--mid)}
+.adj-badge{font-size:.72rem;font-weight:700;padding:4px 12px;border-radius:99px;background:#fff;border:1.5px solid var(--border);color:var(--mid);transition:all .25s}
+.adj-track{display:flex;align-items:center;gap:10px}
+.adj-lbl{font-size:.7rem;color:var(--mid);white-space:nowrap;font-weight:600}
+.adj-slider{-webkit-appearance:none;appearance:none;flex:1;height:8px;background:linear-gradient(90deg,var(--p1),var(--p3));border-radius:99px;outline:none;cursor:pointer}
+.adj-slider::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:#fff;border:3px solid var(--p1);cursor:pointer;box-shadow:0 2px 10px rgba(255,143,171,.4);transition:transform .15s}
+.adj-slider::-webkit-slider-thumb:active{transform:scale(1.2)}
+.adj-marks{display:flex;justify-content:space-between;margin-top:7px}
+.adj-marks span{font-size:.62rem;color:var(--mid)}
+.adj-tip{margin-top:12px;font-size:.78rem;color:#888;line-height:1.6}
+.adj-notice{margin-top:10px;background:#fff;border-radius:10px;padding:11px 13px;font-size:.78rem;color:#666;line-height:1.6;border-left:3px solid var(--p1)}
+.btot{border-radius:14px;padding:15px;display:flex;justify-content:space-between;align-items:center;margin-top:14px;background:linear-gradient(135deg,var(--p1),var(--p4))}
+.btot-lbl{font-size:.85rem;color:rgba(255,255,255,.85);font-weight:600}
+.btot-val{font-family:'Jua',cursive;font-size:1.6rem;color:#fff}
+.tp{background:linear-gradient(135deg,#f0fff4,#e8f4ff);border-radius:18px;padding:20px;border:1.5px solid #caf0d0;box-shadow:3px 4px 0 #d8f0dc;margin-bottom:12px}
+.tr{display:flex;gap:12px;padding:9px 0;border-bottom:1px dashed #cde8d0;font-size:.83rem;color:#555;line-height:1.6}
+.tr:last-child{border-bottom:none;padding-bottom:0}
+.tic{flex-shrink:0}
+.rbtn{width:100%;background:#fff;border:2px solid #fcd5e0;border-radius:14px;padding:15px;font-family:'Jua',cursive;font-size:1rem;color:var(--p1);cursor:pointer;box-shadow:3px 4px 0 #fcd5e0;transition:all .18s;margin-top:4px}
+.rbtn:active{transform:translate(2px,3px);box-shadow:none}
+.nm{background:var(--card);border-radius:18px;padding:32px 24px;text-align:center;border:1.5px solid var(--border);box-shadow:3px 4px 0 #f0e0e8}
+</style>
+</head>
+<body>
+<div id="Q" class="scr on">
+  <div class="hero">
+    <div class="hbg">✈ 여행 코스 찾기</div>
+    <h1>어디든<br><em>데려다줄게</em> 🗺️</h1>
+    <p>도시 → 동네 → 스타일 → 동행 순으로 골라주세요!</p>
+  </div>
+  <div class="wv"><svg viewBox="0 0 480 36" preserveAspectRatio="none" fill="#fff9f5"><path d="M0,36 L0,18 Q60,0 120,18 Q180,36 240,18 Q300,0 360,18 Q420,36 480,18 L480,36 Z"/></svg></div>
+  <div class="sw"><div class="dots" id="DT"></div><div id="CA"></div></div>
+</div>
+<div id="R" class="scr"></div>
+
+<script>
+// ── 데이터 ──────────────────────────────────────────
+var COURSES = [{"city": "서울", "district": "연남동", "vibe": "맛집", "who": "혼자", "t": "연남동 혼자 감성 맛집 투어", "e": "🍜", "s": "경의선숲길 따라 혼자 즐기는 연남동 골목 맛집", "b": ["혼자여행", "연남동", "감성카페"], "base_ss": [{"ti": "12:00", "ty": "meal", "ic": "🥗", "n": "연남동 브런치 카페", "d": "연남동 감성 브런치 카페에서 에그베네딕트와 커피.", "tg": ["연남동", "브런치"], "st": 4.6, "cost": 13000}, {"ti": "14:00", "ty": "cafe", "ic": "☕", "n": "경의선숲길 카페 산책", "d": "경의선숲길 따라 걸으며 카페 구경.", "tg": ["경의선숲길", "카페"], "st": 4.5, "cost": 7000}, {"ti": "18:00", "ty": "night", "ic": "🍷", "n": "연남동 와인바·이자카야", "d": "연남동 골목 와인바에서 혼술.", "tg": ["연남동", "와인바"], "st": 4.6, "cost": 18000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "11:00", "ty": "cafe", "ic": "🍩", "n": "연남동 마카롱 디저트 숍", "d": "연남동 유명 마카롱 숍.", "tg": ["마카롱", "디저트"], "st": 4.5, "cost": 8000}}, {"min_tier": 2, "stop": {"ti": "16:00", "ty": "activity", "ic": "🌿", "n": "경의선숲길 피크닉", "d": "숲길 피크닉 매트 깔고 혼자 책 읽기.", "tg": ["숲길", "피크닉"], "st": 4.7, "cost": 0}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🍸", "n": "연남동 루프탑 바", "d": "루프탑에서 칵테일 한 잔.", "tg": ["루프탑바", "칵테일"], "st": 4.7, "cost": 25000}}], "bg": [{"l": "🥗 브런치", "a": "~1.3만원"}, {"l": "☕ 카페", "a": "~7천원"}, {"l": "🍷 와인바", "a": "~1.8만원"}], "base": 38000, "tips": [{"i": "🚇", "t": "홍대입구역 2호선"}, {"i": "💡", "t": "경의선숲길 따라 걸으면 연남동 명소"}, {"i": "⏰", "t": "브런치 주말 웨이팅 있으니 일찍"}, {"i": "🎒", "t": "숲길 산책 편한 신발 추천"}]}, {"city": "서울", "district": "연남동", "vibe": "맛집", "who": "연인", "t": "연남동 커플 감성 데이트", "e": "🥂", "s": "경의선숲길 따라 커플 감성 풀코스", "b": ["커플", "연남동", "감성데이트"], "base_ss": [{"ti": "11:30", "ty": "meal", "ic": "🥐", "n": "연남동 베이커리 브런치", "d": "연남동 유명 베이커리 카페에서 크루아상과 커피.", "tg": ["베이커리", "브런치"], "st": 4.7, "cost": 16000}, {"ti": "14:00", "ty": "activity", "ic": "🌿", "n": "경의선숲길 커플 산책", "d": "경의선숲길 따라 손잡고 산책.", "tg": ["경의선숲길", "커플"], "st": 4.8, "cost": 0}, {"ti": "19:00", "ty": "night", "ic": "🍷", "n": "연남동 프렌치 레스토랑", "d": "연남동 분위기 좋은 프렌치 레스토랑에서 코스 요리.", "tg": ["프렌치", "레스토랑"], "st": 4.8, "cost": 45000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "15:30", "ty": "cafe", "ic": "☕", "n": "연남동 감성 카페 디저트", "d": "숲길 걷다가 예쁜 카페에서 케이크 한 조각.", "tg": ["감성카페", "케이크"], "st": 4.6, "cost": 12000}}, {"min_tier": 2, "stop": {"ti": "13:00", "ty": "activity", "ic": "🛍️", "n": "연남동 빈티지 숍 쇼핑", "d": "연남동 개성 있는 빈티지 숍 구경.", "tg": ["빈티지", "쇼핑"], "st": 4.4, "cost": 20000}}, {"min_tier": 3, "stop": {"ti": "21:00", "ty": "night", "ic": "🌃", "n": "연남동 루프탑 야경", "d": "루프탑 바에서 칵테일과 커플 야경.", "tg": ["루프탑", "야경"], "st": 4.7, "cost": 30000}}], "bg": [{"l": "🥐 브런치", "a": "~1.6만원"}, {"l": "🌿 숲길", "a": "무료"}, {"l": "🍷 레스토랑", "a": "~4.5만원"}], "base": 61000, "tips": [{"i": "⏰", "t": "레스토랑 예약 필수!"}, {"i": "🚇", "t": "홍대입구역 2호선"}, {"i": "💡", "t": "경의선숲길 계절별 꽃/단풍 예쁨"}, {"i": "📸", "t": "숲길에서 커플 사진 찍기 좋아요"}]}, {"city": "서울", "district": "연남동", "vibe": "맛집", "who": "친구", "t": "연남동 친구들 먹방 투어", "e": "🍻", "s": "연남동 맛집 골목 친구들이랑 몰아먹기", "b": ["친구", "연남동", "먹방"], "base_ss": [{"ti": "12:00", "ty": "meal", "ic": "🍜", "n": "연남동 냉면·메밀 국수", "d": "연남동 유명 냉면 맛집. 쫄깃하고 시원한 메밀 국수.", "tg": ["냉면", "메밀국수"], "st": 4.7, "cost": 11000}, {"ti": "14:30", "ty": "cafe", "ic": "🧋", "n": "연남동 버블티·음료 카페", "d": "연남동 인기 음료 카페에서 버블티.", "tg": ["버블티", "음료"], "st": 4.5, "cost": 8000}, {"ti": "18:30", "ty": "night", "ic": "🍺", "n": "연남동 수제맥주 펍", "d": "연남동 수제맥주 펍에서 왁자지껄.", "tg": ["수제맥주", "펍"], "st": 4.6, "cost": 20000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "16:00", "ty": "meal", "ic": "🍕", "n": "연남동 피자·파스타", "d": "연남동 이탈리안 맛집에서 조기 저녁.", "tg": ["피자", "파스타"], "st": 4.6, "cost": 15000}}, {"min_tier": 2, "stop": {"ti": "11:00", "ty": "meal", "ic": "🥞", "n": "연남동 줄 서는 브런치", "d": "줄 서는 브런치 맛집. 미리 일찍.", "tg": ["브런치"], "st": 4.7, "cost": 14000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🎸", "n": "연남동 라이브 바", "d": "라이브 공연 바에서 음악 들으며 맥주.", "tg": ["라이브바", "음악"], "st": 4.7, "cost": 25000}}], "bg": [{"l": "🍜 냉면", "a": "~1.1만원"}, {"l": "🧋 버블티", "a": "~8천원"}, {"l": "🍺 수제맥주", "a": "~2만원"}], "base": 39000, "tips": [{"i": "🚇", "t": "홍대입구역 2번 출구"}, {"i": "⏰", "t": "주말 저녁 연남동 골목 엄청 붐벼요"}, {"i": "💡", "t": "경의선숲길 산책 후 수제맥주 추천"}, {"i": "🅿️", "t": "주차 어려워요, 대중교통 추천"}]}, {"city": "서울", "district": "성수동", "vibe": "맛집", "who": "혼자", "t": "성수동 혼자 힙 맛집 투어", "e": "🏭", "s": "공장 감성 성수동 혼자 탐방", "b": ["혼자", "성수동", "힙플레이스"], "base_ss": [{"ti": "11:00", "ty": "cafe", "ic": "☕", "n": "어니언 성수·소금빵", "d": "성수동 대표 카페 어니언에서 커피와 소금빵.", "tg": ["어니언", "소금빵"], "st": 4.8, "cost": 10000}, {"ti": "13:00", "ty": "meal", "ic": "🍔", "n": "성수동 수제버거 맛집", "d": "성수동 유명 수제버거 맛집에서 든든한 점심.", "tg": ["수제버거", "성수"], "st": 4.7, "cost": 14000}, {"ti": "16:00", "ty": "activity", "ic": "🛍️", "n": "성수 팝업스토어 투어", "d": "성수동 화제 팝업스토어 탐방.", "tg": ["팝업스토어", "성수"], "st": 4.5, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "14:30", "ty": "cafe", "ic": "🎨", "n": "성수 갤러리 카페", "d": "카페와 갤러리가 합쳐진 성수 독특한 공간.", "tg": ["갤러리카페", "전시"], "st": 4.6, "cost": 9000}}, {"min_tier": 2, "stop": {"ti": "18:00", "ty": "meal", "ic": "🍝", "n": "성수 이탈리안 레스토랑", "d": "성수 분위기 있는 이탈리안에서 파스타 저녁.", "tg": ["이탈리안", "파스타"], "st": 4.7, "cost": 22000}}, {"min_tier": 3, "stop": {"ti": "19:30", "ty": "night", "ic": "🍸", "n": "성수 루프탑 바 한강뷰", "d": "성수 루프탑 바에서 칵테일.", "tg": ["루프탑바", "한강뷰"], "st": 4.7, "cost": 28000}}], "bg": [{"l": "☕ 어니언", "a": "~1만원"}, {"l": "🍔 수제버거", "a": "~1.4만원"}, {"l": "🛍️ 팝업", "a": "무료"}], "base": 24000, "tips": [{"i": "🚇", "t": "뚝섬역 2호선 하차"}, {"i": "💡", "t": "어니언 주말 오픈 전 줄 서야 해요"}, {"i": "📱", "t": "팝업스토어 SNS 미리 확인 필수"}, {"i": "🚶", "t": "성수 카페 거리 걸어서 다 돌아볼 수 있어요"}]}, {"city": "서울", "district": "성수동", "vibe": "맛집", "who": "연인", "t": "성수동 커플 감성 데이트", "e": "💑", "s": "힙한 성수동에서 즐기는 커플 하루", "b": ["커플", "성수동", "힙감성"], "base_ss": [{"ti": "11:00", "ty": "cafe", "ic": "☕", "n": "어니언 브런치·커피", "d": "성수동 대표 카페 어니언에서 브런치.", "tg": ["어니언", "브런치"], "st": 4.8, "cost": 16000}, {"ti": "13:30", "ty": "activity", "ic": "🛍️", "n": "성수 팝업·빈티지 숍", "d": "성수 팝업스토어 + 빈티지 숍.", "tg": ["팝업", "빈티지"], "st": 4.5, "cost": 15000}, {"ti": "18:30", "ty": "night", "ic": "🍷", "n": "성수 파인다이닝 레스토랑", "d": "성수 예약 레스토랑에서 코스 요리와 와인.", "tg": ["파인다이닝", "와인"], "st": 4.8, "cost": 55000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "15:30", "ty": "cafe", "ic": "🍰", "n": "성수 디저트 카페", "d": "성수 인기 케이크 카페에서 디저트.", "tg": ["디저트카페", "케이크"], "st": 4.7, "cost": 12000}}, {"min_tier": 2, "stop": {"ti": "17:00", "ty": "activity", "ic": "🖼️", "n": "성수 갤러리 전시 관람", "d": "성수 갤러리에서 현대미술 전시 관람.", "tg": ["갤러리", "전시"], "st": 4.6, "cost": 5000}}, {"min_tier": 3, "stop": {"ti": "21:00", "ty": "night", "ic": "🌃", "n": "성수 루프탑 야경", "d": "한강 뷰 루프탑 바에서 칵테일과 야경.", "tg": ["루프탑", "야경"], "st": 4.7, "cost": 32000}}], "bg": [{"l": "☕ 브런치", "a": "~1.6만원"}, {"l": "🛍️ 쇼핑", "a": "자유"}, {"l": "🍷 파인다이닝", "a": "~5.5만원"}], "base": 86000, "tips": [{"i": "⏰", "t": "파인다이닝 예약 필수!"}, {"i": "📱", "t": "팝업스토어 사전 체크"}, {"i": "🚇", "t": "뚝섬역 2호선"}, {"i": "💡", "t": "성수 주말 주차 거의 불가"}]}, {"city": "서울", "district": "성수동", "vibe": "맛집", "who": "친구", "t": "성수동 친구들 맛집 & 쇼핑", "e": "🏭", "s": "성수동 팝업 + 맛집 친구들이랑", "b": ["친구", "성수동", "팝업쇼핑"], "base_ss": [{"ti": "11:30", "ty": "cafe", "ic": "☕", "n": "성수 카페거리 모닝 커피", "d": "성수 카페 거리에서 커피 한 잔으로 시작.", "tg": ["성수카페", "커피"], "st": 4.6, "cost": 8000}, {"ti": "13:00", "ty": "meal", "ic": "🍔", "n": "성수 수제버거·타코", "d": "성수 수제버거 or 타코 맛집.", "tg": ["수제버거", "타코"], "st": 4.7, "cost": 14000}, {"ti": "15:00", "ty": "activity", "ic": "🛍️", "n": "성수 팝업스토어 투어", "d": "화제 팝업스토어들 돌아보기.", "tg": ["팝업스토어", "인증샷"], "st": 4.6, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:00", "ty": "meal", "ic": "🍣", "n": "성수 스시·일식 맛집", "d": "성수 인기 스시 오마카세 or 일식집.", "tg": ["스시", "일식"], "st": 4.7, "cost": 20000}}, {"min_tier": 2, "stop": {"ti": "18:30", "ty": "night", "ic": "🍺", "n": "성수 수제맥주 펍", "d": "성수 트렌디한 수제맥주 펍.", "tg": ["수제맥주", "펍"], "st": 4.6, "cost": 18000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🎶", "n": "성수 클럽·라운지", "d": "성수 감각적인 라운지 바.", "tg": ["라운지", "클럽"], "st": 4.5, "cost": 30000}}], "bg": [{"l": "☕ 카페", "a": "~8천원"}, {"l": "🍔 수제버거", "a": "~1.4만원"}, {"l": "🛍️ 팝업", "a": "무료"}], "base": 22000, "tips": [{"i": "📱", "t": "팝업스토어 인스타 미리 확인 필수"}, {"i": "🚇", "t": "뚝섬역 2호선"}, {"i": "💡", "t": "성수 주말 오후 엄청 붐벼요"}, {"i": "⏰", "t": "스시 오마카세 예약 필수"}]}, {"city": "서울", "district": "한남동", "vibe": "문화", "who": "혼자", "t": "한남동 혼자 아트·문화 투어", "e": "🎨", "s": "리움·갤러리 한남동 문화 탐방", "b": ["혼자", "한남동", "문화미술"], "base_ss": [{"ti": "10:00", "ty": "activity", "ic": "🖼️", "n": "리움미술관 특별전", "d": "리움미술관 상설전+특별전. 국보급 유물부터 현대미술까지.", "tg": ["리움미술관", "현대미술"], "st": 4.8, "cost": 10000}, {"ti": "12:30", "ty": "meal", "ic": "🥗", "n": "한남동 카페 런치", "d": "미술관 나와서 한남동 감성 카페에서 점심.", "tg": ["한남동카페", "런치"], "st": 4.6, "cost": 14000}, {"ti": "15:00", "ty": "activity", "ic": "🏛️", "n": "한남동 갤러리 투어", "d": "한남동 소규모 갤러리들 자유롭게 투어.", "tg": ["갤러리투어", "현대미술"], "st": 4.7, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:00", "ty": "cafe", "ic": "📚", "n": "한남동 북카페·독립서점", "d": "한남동 독립서점 겸 카페에서 책 한 권.", "tg": ["북카페", "독립서점"], "st": 4.7, "cost": 8000}}, {"min_tier": 2, "stop": {"ti": "18:30", "ty": "meal", "ic": "🍝", "n": "한남동 이탈리안 저녁", "d": "한남동 분위기 있는 이탈리안 레스토랑.", "tg": ["이탈리안", "저녁"], "st": 4.7, "cost": 28000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🍸", "n": "한남동 클래식 바 위스키", "d": "한남동 클래식 분위기 바에서 위스키 한 잔.", "tg": ["클래식바", "위스키"], "st": 4.8, "cost": 30000}}], "bg": [{"l": "🖼️ 미술관", "a": "~1만원"}, {"l": "🥗 점심", "a": "~1.4만원"}, {"l": "🏛️ 갤러리", "a": "무료"}], "base": 24000, "tips": [{"i": "⏰", "t": "리움미술관 예약 필수"}, {"i": "🚇", "t": "한강진역 6호선 하차"}, {"i": "💡", "t": "갤러리들 대부분 무료 관람"}, {"i": "🎒", "t": "갤러리 투어 2~3시간 여유롭게"}]}, {"city": "서울", "district": "한남동", "vibe": "맛집", "who": "연인", "t": "한남동 커플 럭셔리 데이트", "e": "🏡", "s": "한남동에서 즐기는 럭셔리 커플 코스", "b": ["커플", "한남동", "럭셔리"], "base_ss": [{"ti": "11:00", "ty": "activity", "ic": "🖼️", "n": "리움미술관 관람", "d": "삼성 리움미술관. 건물 자체가 예술.", "tg": ["리움미술관", "현대미술"], "st": 4.8, "cost": 10000}, {"ti": "13:30", "ty": "meal", "ic": "🥩", "n": "한남동 그릴 레스토랑", "d": "한남동 분위기 좋은 그릴에서 스테이크 점심.", "tg": ["그릴", "스테이크"], "st": 4.7, "cost": 38000}, {"ti": "18:30", "ty": "night", "ic": "🍷", "n": "한남동 파인다이닝", "d": "한남동 파인다이닝에서 코스 요리와 와인.", "tg": ["파인다이닝", "와인"], "st": 4.8, "cost": 65000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "15:00", "ty": "cafe", "ic": "☕", "n": "한남동 감성 카페", "d": "한남동 고급스러운 분위기 카페.", "tg": ["감성카페", "디저트"], "st": 4.7, "cost": 12000}}, {"min_tier": 2, "stop": {"ti": "16:30", "ty": "activity", "ic": "🛍️", "n": "한남동 편집숍 쇼핑", "d": "한남동 고급 편집숍 구경.", "tg": ["편집숍", "쇼핑"], "st": 4.5, "cost": 0}}, {"min_tier": 3, "stop": {"ti": "21:00", "ty": "night", "ic": "🌃", "n": "한남동 루프탑 바 야경", "d": "한강 뷰 루프탑 바에서 칵테일과 야경.", "tg": ["루프탑", "한강뷰"], "st": 4.8, "cost": 35000}}], "bg": [{"l": "🖼️ 리움", "a": "~1만원"}, {"l": "🥩 그릴", "a": "~3.8만원"}, {"l": "🍷 파인다이닝", "a": "~6.5만원"}], "base": 113000, "tips": [{"i": "⏰", "t": "리움미술관 온라인 예약 필수!"}, {"i": "🚇", "t": "한강진역 6호선"}, {"i": "⏰", "t": "파인다이닝 반드시 예약하세요"}, {"i": "💡", "t": "한남동 편집숍 평일이 여유로워요"}]}, {"city": "서울", "district": "홍대", "vibe": "맛집", "who": "친구", "t": "홍대 친구들 먹방 & 나이트라이프", "e": "🎵", "s": "홍대 먹고 마시고 즐기는 풀코스", "b": ["친구", "홍대", "나이트라이프"], "base_ss": [{"ti": "13:00", "ty": "meal", "ic": "🍖", "n": "홍대 양꼬치·마라탕", "d": "홍대 중식 골목에서 양꼬치 + 마라탕.", "tg": ["양꼬치", "마라탕"], "st": 4.6, "cost": 14000}, {"ti": "15:30", "ty": "cafe", "ic": "🧋", "n": "홍대 버블티·디저트", "d": "홍대 걷다가 버블티 한 잔.", "tg": ["버블티", "디저트"], "st": 4.4, "cost": 8000}, {"ti": "19:00", "ty": "night", "ic": "🍺", "n": "홍대 수제맥주 펍", "d": "홍대 골목 수제맥주 펍에서 시작.", "tg": ["수제맥주", "펍"], "st": 4.5, "cost": 18000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "18:00", "ty": "meal", "ic": "🍣", "n": "홍대 일식 맛집", "d": "홍대 인기 일식 맛집에서 저녁.", "tg": ["일식", "사케"], "st": 4.6, "cost": 18000}}, {"min_tier": 2, "stop": {"ti": "21:00", "ty": "night", "ic": "🎸", "n": "홍대 라이브클럽", "d": "홍대 라이브클럽에서 공연 관람.", "tg": ["라이브클럽", "공연"], "st": 4.7, "cost": 15000}}, {"min_tier": 3, "stop": {"ti": "23:00", "ty": "night", "ic": "🎶", "n": "홍대 클럽·나이트", "d": "홍대 클럽에서 춤추며 마무리.", "tg": ["클럽", "댄스"], "st": 4.4, "cost": 20000}}], "bg": [{"l": "🍖 양꼬치", "a": "~1.4만원"}, {"l": "🧋 버블티", "a": "~8천원"}, {"l": "🍺 맥주", "a": "~1.8만원"}], "base": 40000, "tips": [{"i": "🚇", "t": "홍대입구역 2호선 9번 출구"}, {"i": "⏰", "t": "라이브클럽 사전 예약 추천"}, {"i": "💡", "t": "홍대 주말 새벽은 엄청 붐벼요"}, {"i": "🏠", "t": "마지막 지하철 시간 미리 확인"}]}, {"city": "서울", "district": "을지로", "vibe": "문화", "who": "혼자", "t": "을지로 혼자 레트로 골목 탐방", "e": "🔩", "s": "노포와 힙한 감성이 공존하는 을지로", "b": ["혼자", "을지로", "레트로"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🍲", "n": "을지로 노포 순댓국", "d": "을지로 오래된 골목 순댓국집. 진한 뼛국물.", "tg": ["을지로", "노포", "순댓국"], "st": 4.7, "cost": 9000}, {"ti": "13:00", "ty": "cafe", "ic": "☕", "n": "을지로 힙카페·독립서점", "d": "인쇄소 골목에 생긴 힙한 카페. 레트로 감성.", "tg": ["힙카페", "독립서점"], "st": 4.8, "cost": 8000}, {"ti": "15:00", "ty": "activity", "ic": "🏗️", "n": "을지로 골목 탐방", "d": "을지로 3~4가 인쇄·조명 거리 탐방.", "tg": ["을지로골목", "레트로"], "st": 4.7, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:00", "ty": "cafe", "ic": "🍺", "n": "을지로 힙바·이자카야", "d": "인쇄골목 사이 숨어있는 힙한 바.", "tg": ["힙바", "이자카야"], "st": 4.7, "cost": 15000}}, {"min_tier": 2, "stop": {"ti": "18:30", "ty": "meal", "ic": "🍖", "n": "을지로 노포 족발·보쌈", "d": "을지로 오랫동안 사랑받는 노포 족발 맛집.", "tg": ["노포", "족발", "보쌈"], "st": 4.7, "cost": 20000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🎸", "n": "을지로 인디 공연장", "d": "을지로 소규모 인디 공연장에서 라이브 공연.", "tg": ["인디공연", "라이브"], "st": 4.7, "cost": 15000}}], "bg": [{"l": "🍲 순댓국", "a": "~9천원"}, {"l": "☕ 카페", "a": "~8천원"}, {"l": "🏗️ 탐방", "a": "무료"}], "base": 17000, "tips": [{"i": "🚇", "t": "을지로3가역 2·3호선"}, {"i": "💡", "t": "을지로 4가 조명 거리 구경 필수"}, {"i": "⏰", "t": "노포 식당은 점심 피크 타임 피해서"}, {"i": "🔦", "t": "골목 탐방 저녁에 하면 더 분위기"}]}, {"city": "부산", "district": "해운대", "vibe": "맛집", "who": "연인", "t": "해운대 커플 바다 & 맛집 코스", "e": "🌊", "s": "해운대 바다 보며 즐기는 커플 맛집 투어", "b": ["커플", "해운대", "바다뷰"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🥞", "n": "마린시티 브런치 카페", "d": "마린시티 뷰 카페에서 브런치.", "tg": ["마린시티", "브런치"], "st": 4.7, "cost": 18000}, {"ti": "14:00", "ty": "activity", "ic": "🏖️", "n": "해운대 해수욕장 산책", "d": "해운대 해변 따라 커플 산책.", "tg": ["해운대해변", "산책"], "st": 4.8, "cost": 0}, {"ti": "18:30", "ty": "night", "ic": "🦀", "n": "해운대 씨푸드 레스토랑", "d": "해운대 바다 뷰 씨푸드 레스토랑에서 로맨틱 저녁.", "tg": ["씨푸드", "바다뷰레스토랑"], "st": 4.8, "cost": 55000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "15:30", "ty": "cafe", "ic": "☕", "n": "해운대 뷰 카페", "d": "해운대 해변 뷰 카페에서 커피 타임.", "tg": ["뷰카페", "커피"], "st": 4.7, "cost": 9000}}, {"min_tier": 2, "stop": {"ti": "13:00", "ty": "activity", "ic": "🚤", "n": "해운대 요트 투어", "d": "해운대 요트 투어로 바다에서 부산 전망.", "tg": ["요트투어", "바다"], "st": 4.8, "cost": 40000}}, {"min_tier": 3, "stop": {"ti": "21:00", "ty": "night", "ic": "🍸", "n": "마린시티 루프탑 바", "d": "마린시티 고층 루프탑 바에서 칵테일과 야경.", "tg": ["루프탑바", "야경"], "st": 4.8, "cost": 35000}}], "bg": [{"l": "🥞 브런치", "a": "~1.8만원"}, {"l": "🏖️ 해변산책", "a": "무료"}, {"l": "🦀 씨푸드", "a": "~5.5만원"}], "base": 73000, "tips": [{"i": "⏰", "t": "레스토랑 예약 필수!"}, {"i": "🚇", "t": "해운대역 2호선"}, {"i": "💡", "t": "요트 투어 사전 예약 추천"}, {"i": "🌊", "t": "여름 성수기 주말 인파 많아요"}]}, {"city": "부산", "district": "해운대", "vibe": "맛집", "who": "가족", "t": "해운대 가족 바다 나들이", "e": "👨‍👩‍👧", "s": "아이와 함께하는 해운대 가족 풀코스", "b": ["가족여행", "해운대", "아이동반"], "base_ss": [{"ti": "10:00", "ty": "activity", "ic": "🐟", "n": "SEA LIFE 아쿠아리움", "d": "해운대 SEA LIFE 아쿠아리움. 아이들 최애.", "tg": ["아쿠아리움", "아이동반"], "st": 4.6, "cost": 15000}, {"ti": "12:30", "ty": "meal", "ic": "🍜", "n": "해운대시장 어묵·국수", "d": "해운대시장에서 어묵·국수·튀김으로 가볍게 점심.", "tg": ["해운대시장", "어묵"], "st": 4.5, "cost": 10000}, {"ti": "14:30", "ty": "activity", "ic": "🏖️", "n": "해운대 해수욕장 모래놀이", "d": "해운대 해변에서 모래사장 놀기.", "tg": ["해수욕장", "모래놀이"], "st": 4.8, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:00", "ty": "meal", "ic": "🍕", "n": "해운대 패밀리 레스토랑", "d": "아이도 좋아하는 메뉴 가득한 레스토랑.", "tg": ["패밀리레스토랑", "저녁"], "st": 4.4, "cost": 22000}}, {"min_tier": 2, "stop": {"ti": "16:00", "ty": "activity", "ic": "🎠", "n": "해운대 달맞이길 산책", "d": "달맞이길 따라 가족 산책.", "tg": ["달맞이길", "산책"], "st": 4.6, "cost": 0}}, {"min_tier": 3, "stop": {"ti": "11:30", "ty": "activity", "ic": "🚢", "n": "해운대 유람선 체험", "d": "해운대 출발 유람선. 아이들도 즐거운 바다 체험.", "tg": ["유람선", "바다체험"], "st": 4.5, "cost": 15000}}], "bg": [{"l": "🐟 아쿠아리움", "a": "~1.5만원"}, {"l": "🍜 점심", "a": "~1만원"}, {"l": "🏖️ 해수욕장", "a": "무료"}], "base": 25000, "tips": [{"i": "⏰", "t": "아쿠아리움 오픈 시간 맞춰 가면 줄 짧아요"}, {"i": "🎒", "t": "모래놀이 수건·갈아입을 옷 챙기기"}, {"i": "💡", "t": "해운대 주말 주차 어려워요"}, {"i": "🅿️", "t": "동백섬 주차장 이용 추천"}]}, {"city": "부산", "district": "해운대", "vibe": "맛집", "who": "친구", "t": "해운대 친구들 해변 먹방", "e": "🏖️", "s": "친구들이랑 해운대 즐기기", "b": ["친구", "해운대", "해변먹방"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🍜", "n": "해운대 밀면·돼지국밥", "d": "부산 오면 밀면 필수!", "tg": ["밀면", "돼지국밥"], "st": 4.7, "cost": 9000}, {"ti": "13:00", "ty": "activity", "ic": "🏄", "n": "해운대 서핑·패들보드 체험", "d": "해운대에서 서핑 or 패들보드 체험.", "tg": ["서핑", "패들보드"], "st": 4.7, "cost": 25000}, {"ti": "18:00", "ty": "meal", "ic": "🦪", "n": "해운대 회센터 활어회", "d": "해운대 회센터에서 친구들이랑 활어회 한판.", "tg": ["활어회", "회센터"], "st": 4.7, "cost": 25000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "16:00", "ty": "cafe", "ic": "🍦", "n": "해운대 아이스크림·카페", "d": "해변 걸으며 아이스크림.", "tg": ["아이스크림", "카페"], "st": 4.5, "cost": 7000}}, {"min_tier": 2, "stop": {"ti": "20:00", "ty": "night", "ic": "🍺", "n": "해운대 해변 바 맥주", "d": "해변 바에서 맥주. 여름밤 해운대.", "tg": ["해변바", "맥주"], "st": 4.5, "cost": 20000}}, {"min_tier": 3, "stop": {"ti": "21:30", "ty": "night", "ic": "🎉", "n": "해운대 루프탑 파티", "d": "해운대 루프탑 바에서 야경과 함께 파티.", "tg": ["루프탑", "파티"], "st": 4.6, "cost": 30000}}], "bg": [{"l": "🍜 밀면", "a": "~9천원"}, {"l": "🏄 서핑체험", "a": "~2.5만원"}, {"l": "🦪 활어회", "a": "~2.5만원"}], "base": 59000, "tips": [{"i": "🚇", "t": "해운대역 2호선"}, {"i": "💡", "t": "서핑 체험 사전 예약 추천"}, {"i": "⏰", "t": "회센터 오후 일찍 가야 신선"}, {"i": "🌊", "t": "여름 성수기 해변 밤 붐벼요"}]}, {"city": "부산", "district": "광안리", "vibe": "맛집", "who": "연인", "t": "광안리 커플 야경 로맨틱 코스", "e": "🌉", "s": "광안대교 야경과 함께하는 커플 코스", "b": ["커플", "광안리", "야경"], "base_ss": [{"ti": "14:00", "ty": "meal", "ic": "🥞", "n": "광안리 브런치 카페", "d": "광안리 해변 뷰 카페에서 브런치.", "tg": ["광안리카페", "브런치"], "st": 4.6, "cost": 16000}, {"ti": "16:00", "ty": "activity", "ic": "🌊", "n": "광안리 해수욕장 산책", "d": "광안리 해변 따라 커플 산책.", "tg": ["광안리해변", "커플"], "st": 4.8, "cost": 0}, {"ti": "19:00", "ty": "night", "ic": "🦀", "n": "광안리 씨푸드 레스토랑", "d": "광안리 바다뷰 레스토랑에서 해산물 코스.", "tg": ["씨푸드", "바다뷰"], "st": 4.7, "cost": 45000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:30", "ty": "cafe", "ic": "☕", "n": "광안리 선셋 카페", "d": "해 질 무렵 광안리 카페에서 선셋 감상.", "tg": ["선셋카페", "광안대교"], "st": 4.7, "cost": 8000}}, {"min_tier": 2, "stop": {"ti": "21:00", "ty": "night", "ic": "🍸", "n": "광안리 바닷가 바 칵테일", "d": "광안리 해변 바에서 칵테일과 광안대교 야경.", "tg": ["바닷가바", "칵테일"], "st": 4.8, "cost": 25000}}, {"min_tier": 3, "stop": {"ti": "22:00", "ty": "night", "ic": "🌃", "n": "광안대교 야경 크루즈", "d": "광안대교 야경을 바다 위에서 감상.", "tg": ["야경크루즈", "광안대교"], "st": 4.8, "cost": 35000}}], "bg": [{"l": "🥞 브런치", "a": "~1.6만원"}, {"l": "🌊 해변산책", "a": "무료"}, {"l": "🦀 씨푸드", "a": "~4.5만원"}], "base": 61000, "tips": [{"i": "🚇", "t": "금련산역 3호선 or 남천역 2호선"}, {"i": "💡", "t": "광안대교 야경은 밤 9시 이후 최고"}, {"i": "⏰", "t": "레스토랑 예약 필수"}, {"i": "🌊", "t": "광안리는 해운대보다 한산"}]}, {"city": "부산", "district": "광안리", "vibe": "맛집", "who": "친구", "t": "광안리 친구들 맥주 & 야경 투어", "e": "🍻", "s": "광안리 친구들이랑 맥주와 야경", "b": ["친구", "광안리", "맥주야경"], "base_ss": [{"ti": "14:00", "ty": "meal", "ic": "🍜", "n": "광안리 부산 밀면", "d": "광안리 근처 밀면 맛집에서 점심.", "tg": ["밀면", "부산식"], "st": 4.7, "cost": 9000}, {"ti": "16:00", "ty": "activity", "ic": "🏖️", "n": "광안리 해변 자전거", "d": "광안리 해변 자전거 대여해서 달리기.", "tg": ["해변", "자전거"], "st": 4.7, "cost": 5000}, {"ti": "19:00", "ty": "night", "ic": "🍺", "n": "광안리 수제맥주 펍", "d": "광안리 해변 수제맥주 펍에서 광안대교 보며 맥주.", "tg": ["수제맥주", "광안대교"], "st": 4.8, "cost": 20000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:30", "ty": "meal", "ic": "🦪", "n": "광안리 조개구이·회", "d": "광안리 해산물 식당에서 조개구이와 회.", "tg": ["조개구이", "회"], "st": 4.6, "cost": 22000}}, {"min_tier": 2, "stop": {"ti": "21:00", "ty": "night", "ic": "🍻", "n": "광안리 포차 거리", "d": "광안리 포차 거리에서 막걸리와 안주.", "tg": ["포차", "막걸리"], "st": 4.6, "cost": 18000}}, {"min_tier": 3, "stop": {"ti": "22:00", "ty": "night", "ic": "🎸", "n": "광안리 클럽·바", "d": "광안리 클럽에서 신나게 마무리.", "tg": ["클럽", "나이트"], "st": 4.5, "cost": 25000}}], "bg": [{"l": "🍜 밀면", "a": "~9천원"}, {"l": "🚴 자전거", "a": "~5천원"}, {"l": "🍺 수제맥주", "a": "~2만원"}], "base": 34000, "tips": [{"i": "🚇", "t": "금련산역 3호선"}, {"i": "💡", "t": "광안대교 야경은 9시 이후 최고"}, {"i": "⏰", "t": "주말 광안리 포차 자리 일찍 잡기"}, {"i": "🌊", "t": "광안리가 해운대보다 로컬 분위기"}]}, {"city": "부산", "district": "광안리", "vibe": "맛집", "who": "혼자", "t": "광안리 혼자 야경 힐링 투어", "e": "🌙", "s": "광안대교 야경 보며 혼자 힐링", "b": ["혼자", "광안리", "야경힐링"], "base_ss": [{"ti": "15:00", "ty": "cafe", "ic": "☕", "n": "광안리 바다뷰 카페", "d": "광안리 바다 보이는 카페에서 혼자 커피 타임.", "tg": ["바다뷰카페", "혼자"], "st": 4.7, "cost": 8000}, {"ti": "17:00", "ty": "activity", "ic": "🚶", "n": "광안리 해변 노을 산책", "d": "노을 지는 광안리 해변 산책.", "tg": ["노을", "해변산책"], "st": 4.9, "cost": 0}, {"ti": "19:30", "ty": "night", "ic": "🦪", "n": "광안리 해산물·회 혼밥", "d": "광안리 1인 친화 해산물 식당에서 혼자 회 한 접시.", "tg": ["혼밥", "회"], "st": 4.6, "cost": 18000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "21:00", "ty": "night", "ic": "🍺", "n": "광안리 수제맥주 바", "d": "해변 수제맥주 바에서 광안대교 야경 보며 혼술.", "tg": ["수제맥주", "야경"], "st": 4.7, "cost": 12000}}, {"min_tier": 2, "stop": {"ti": "16:00", "ty": "cafe", "ic": "📚", "n": "광안리 독립서점 카페", "d": "광안리 독립서점 겸 카페에서 책 한 권.", "tg": ["독립서점", "카페"], "st": 4.7, "cost": 8000}}, {"min_tier": 3, "stop": {"ti": "22:00", "ty": "night", "ic": "🌃", "n": "광안리 야경 산책로", "d": "밤 산책로 따라 걸으며 광안대교 풀뷰.", "tg": ["야경산책", "광안대교"], "st": 4.9, "cost": 0}}], "bg": [{"l": "☕ 카페", "a": "~8천원"}, {"l": "🚶 산책", "a": "무료"}, {"l": "🦪 혼밥 회", "a": "~1.8만원"}], "base": 26000, "tips": [{"i": "🚇", "t": "남천역 2호선"}, {"i": "⏰", "t": "광안대교 야경 9시 이후 최고"}, {"i": "💡", "t": "광안리 혼밥 1인 식당 많아요"}, {"i": "🌙", "t": "달 뜨는 날 광안리 특히 아름다워요"}]}, {"city": "부산", "district": "남포동·자갈치", "vibe": "맛집", "who": "혼자", "t": "남포동 혼자 로컬 투어", "e": "🐟", "s": "부산 로컬들의 성지 남포동 탐방", "b": ["혼자", "남포동", "자갈치"], "base_ss": [{"ti": "10:00", "ty": "meal", "ic": "🥚", "n": "남포동 씨앗호떡·야시장", "d": "부산 오면 씨앗호떡 필수! 부평깡통야시장에서 길거리 음식.", "tg": ["씨앗호떡", "야시장"], "st": 4.8, "cost": 3000}, {"ti": "12:00", "ty": "meal", "ic": "🦪", "n": "자갈치시장 2층 활어회", "d": "자갈치시장 2층 식당에서 싱싱한 회.", "tg": ["자갈치", "활어회"], "st": 4.7, "cost": 20000}, {"ti": "14:30", "ty": "activity", "ic": "🚢", "n": "영도 흰여울마을 산책", "d": "영도 흰여울마을 카페에서 바다 전망 커피.", "tg": ["영도", "흰여울마을"], "st": 4.6, "cost": 7000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "16:00", "ty": "activity", "ic": "🌉", "n": "영도대교 도개 구경", "d": "영도대교 도개는 매일 14시.", "tg": ["영도대교", "도개"], "st": 4.6, "cost": 0}}, {"min_tier": 2, "stop": {"ti": "17:30", "ty": "meal", "ic": "🍜", "n": "국제시장 먹자골목", "d": "국제시장 먹자골목 씨앗호떡·비빔당면.", "tg": ["국제시장", "먹자골목"], "st": 4.6, "cost": 10000}}, {"min_tier": 3, "stop": {"ti": "19:00", "ty": "night", "ic": "🍺", "n": "남포동 포차 막걸리", "d": "남포동 포차에서 혼자 막걸리 한 잔.", "tg": ["포차", "막걸리"], "st": 4.5, "cost": 12000}}], "bg": [{"l": "🥚 씨앗호떡", "a": "~3천원"}, {"l": "🦪 활어회", "a": "~2만원"}, {"l": "☕ 카페", "a": "~7천원"}], "base": 30000, "tips": [{"i": "🚇", "t": "남포역 1호선"}, {"i": "⏰", "t": "자갈치시장 오전 일찍 가야 신선"}, {"i": "💡", "t": "영도대교 도개 매일 14시"}, {"i": "🚢", "t": "자갈치시장-영도 걸어서 이동 가능"}]}, {"city": "부산", "district": "남포동·자갈치", "vibe": "맛집", "who": "친구", "t": "남포동 친구들 로컬 먹방", "e": "🦀", "s": "부산 로컬 맛집 친구들이랑 몰아먹기", "b": ["친구", "남포동", "로컬먹방"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🥚", "n": "부평깡통야시장 길거리 음식", "d": "씨앗호떡·비빔당면·각종 부산 길거리 음식.", "tg": ["씨앗호떡", "길거리음식"], "st": 4.8, "cost": 8000}, {"ti": "12:30", "ty": "meal", "ic": "🦪", "n": "자갈치시장 회·해산물", "d": "자갈치시장에서 친구들이랑 활어회 한판.", "tg": ["자갈치", "활어회"], "st": 4.7, "cost": 30000}, {"ti": "15:00", "ty": "activity", "ic": "🚶", "n": "용두산공원·부산타워", "d": "용두산공원 올라 부산 시내 전망.", "tg": ["용두산공원", "부산타워"], "st": 4.5, "cost": 3000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:00", "ty": "meal", "ic": "🍜", "n": "국제시장 먹자골목 추가", "d": "국제시장 먹자골목에서 부산 음식 이것저것.", "tg": ["국제시장", "먹자골목"], "st": 4.6, "cost": 10000}}, {"min_tier": 2, "stop": {"ti": "19:00", "ty": "night", "ic": "🍺", "n": "남포동 수제맥주·포차", "d": "남포동 수제맥주 펍에서 마무리.", "tg": ["수제맥주", "포차"], "st": 4.6, "cost": 20000}}, {"min_tier": 3, "stop": {"ti": "20:30", "ty": "night", "ic": "🎶", "n": "남포동 라이브 바", "d": "남포동 라이브 바에서 음악과 함께.", "tg": ["라이브바", "음악"], "st": 4.6, "cost": 18000}}], "bg": [{"l": "🥚 길거리음식", "a": "~8천원"}, {"l": "🦪 활어회", "a": "~3만원"}, {"l": "🚶 부산타워", "a": "~3천원"}], "base": 41000, "tips": [{"i": "🚇", "t": "남포역 1호선"}, {"i": "⏰", "t": "자갈치시장 오전 일찍 가야 신선"}, {"i": "💡", "t": "영도대교 도개 14시 구경 추천"}, {"i": "🍺", "t": "국제시장 먹자골목 저녁에 더 활발"}]}, {"city": "부산", "district": "전포동", "vibe": "맛집", "who": "연인", "t": "전포 커플 카페 & 맛집 데이트", "e": "☕", "s": "부산 감성 카페 거리 전포 커플 코스", "b": ["커플", "전포동", "카페거리"], "base_ss": [{"ti": "11:00", "ty": "cafe", "ic": "☕", "n": "전포 카페거리 브런치", "d": "전포카페거리에서 분위기 좋은 브런치.", "tg": ["전포카페거리", "브런치"], "st": 4.6, "cost": 16000}, {"ti": "13:30", "ty": "meal", "ic": "🍝", "n": "전포 이탈리안 파스타", "d": "전포 인기 이탈리안 맛집에서 파스타 점심.", "tg": ["이탈리안", "파스타"], "st": 4.7, "cost": 17000}, {"ti": "15:30", "ty": "cafe", "ic": "🍰", "n": "전포 디저트 카페", "d": "전포 유명 디저트 카페에서 케이크 한 조각.", "tg": ["디저트카페", "케이크"], "st": 4.6, "cost": 10000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:00", "ty": "activity", "ic": "🛍️", "n": "전포 편집숍·빈티지 쇼핑", "d": "전포 개성 있는 편집숍과 빈티지 숍.", "tg": ["편집숍", "빈티지"], "st": 4.5, "cost": 0}}, {"min_tier": 2, "stop": {"ti": "18:30", "ty": "meal", "ic": "🥩", "n": "전포 스테이크·그릴 저녁", "d": "전포 분위기 좋은 그릴 레스토랑.", "tg": ["스테이크", "그릴"], "st": 4.7, "cost": 35000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🍸", "n": "전포 와인바·칵테일", "d": "전포 와인바에서 커플 마무리.", "tg": ["와인바", "칵테일"], "st": 4.6, "cost": 25000}}], "bg": [{"l": "☕ 브런치", "a": "~1.6만원"}, {"l": "🍝 파스타", "a": "~1.7만원"}, {"l": "🍰 디저트", "a": "~1만원"}], "base": 43000, "tips": [{"i": "🚇", "t": "전포역 1호선"}, {"i": "💡", "t": "전포카페거리 SNS 핫플 많아요"}, {"i": "⏰", "t": "주말 브런치 웨이팅 있으니 일찍"}, {"i": "🛍️", "t": "전포 빈티지 숍 주말에 더 다양"}]}, {"city": "제주", "district": "애월", "vibe": "맛집", "who": "연인", "t": "애월 커플 감성 카페 & 맛집", "e": "🌊", "s": "애월 해안도로 따라 커플 감성 코스", "b": ["커플", "애월", "감성카페"], "base_ss": [{"ti": "10:00", "ty": "cafe", "ic": "☕", "n": "애월 카페 노을·오션뷰 카페", "d": "애월 해안도로 바다 보이는 카페. 카페 노을이 대표.", "tg": ["애월카페", "오션뷰"], "st": 4.8, "cost": 9000}, {"ti": "12:00", "ty": "meal", "ic": "🍝", "n": "애월 해안 레스토랑 점심", "d": "애월 바다 뷰 레스토랑에서 제주 식재료 파스타.", "tg": ["애월레스토랑", "제주"], "st": 4.7, "cost": 22000}, {"ti": "14:30", "ty": "activity", "ic": "🌊", "n": "한담해안 산책로 산책", "d": "한담해안 산책로 따라 손잡고 산책.", "tg": ["한담해안", "산책로"], "st": 4.9, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "16:30", "ty": "cafe", "ic": "🍊", "n": "애월 감귤 카페·디저트", "d": "애월 감귤 음료와 한라봉 디저트.", "tg": ["감귤카페", "한라봉"], "st": 4.7, "cost": 9000}}, {"min_tier": 2, "stop": {"ti": "18:30", "ty": "meal", "ic": "🍖", "n": "애월 흑돼지 레스토랑", "d": "애월 전망 좋은 식당에서 제주 흑돼지.", "tg": ["흑돼지", "애월"], "st": 4.7, "cost": 30000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🌅", "n": "애월 선셋 와인바", "d": "노을 지는 애월에서 와인 한 잔.", "tg": ["선셋", "와인바"], "st": 4.8, "cost": 28000}}], "bg": [{"l": "☕ 카페", "a": "~9천원"}, {"l": "🍝 파스타", "a": "~2.2만원"}, {"l": "🌊 한담해안", "a": "무료"}], "base": 31000, "tips": [{"i": "🚗", "t": "렌터카 필수! 대중교통 불편"}, {"i": "💡", "t": "애월 카페는 주말 웨이팅 있어요"}, {"i": "⏰", "t": "한담해안 일몰 시간 맞추면 최고"}, {"i": "🅿️", "t": "카페 주차장 협소한 경우 많아요"}]}, {"city": "제주", "district": "애월", "vibe": "자연", "who": "혼자", "t": "애월 혼자 해안 힐링 자전거", "e": "🌅", "s": "혼자 걷는 애월 해안 도로", "b": ["혼자", "애월", "해안힐링"], "base_ss": [{"ti": "09:00", "ty": "activity", "ic": "🚴", "n": "애월 해안도로 자전거", "d": "애월 해안도로 자전거. 제주 바람 맞으며 달리는 힐링.", "tg": ["해안도로", "자전거"], "st": 4.9, "cost": 15000}, {"ti": "11:30", "ty": "cafe", "ic": "☕", "n": "애월 오션뷰 카페 쉬어가기", "d": "자전거 타다가 오션뷰 카페에서 쉬어가기.", "tg": ["오션뷰카페", "휴식"], "st": 4.8, "cost": 8000}, {"ti": "14:00", "ty": "activity", "ic": "🌊", "n": "한담해안 산책로 트레킹", "d": "한담해안 산책로 천천히 걷기.", "tg": ["한담해안", "트레킹"], "st": 4.9, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "16:00", "ty": "cafe", "ic": "🍊", "n": "애월 감귤 주스·카페", "d": "자전거 후 달달한 감귤 주스 한 잔.", "tg": ["감귤주스", "카페"], "st": 4.7, "cost": 7000}}, {"min_tier": 2, "stop": {"ti": "18:00", "ty": "meal", "ic": "🍜", "n": "애월 고기국수 제주식 저녁", "d": "애월 근처 제주 로컬 식당에서 저녁.", "tg": ["고기국수", "제주식"], "st": 4.7, "cost": 11000}}, {"min_tier": 3, "stop": {"ti": "19:30", "ty": "night", "ic": "🌇", "n": "애월 선셋 뷰포인트", "d": "애월 선셋 뷰포인트에서 일몰 감상.", "tg": ["선셋", "뷰포인트"], "st": 4.9, "cost": 0}}], "bg": [{"l": "🚴 자전거 대여", "a": "~1.5만원"}, {"l": "☕ 카페", "a": "~8천원"}, {"l": "🌊 한담해안", "a": "무료"}], "base": 23000, "tips": [{"i": "🚗", "t": "렌터카 필수"}, {"i": "🚴", "t": "자전거 대여 사전 예약 추천"}, {"i": "⏰", "t": "한담해안 오전이 한산해요"}, {"i": "🌇", "t": "일몰 시간 미리 체크하고 뷰포인트"}]}, {"city": "제주", "district": "성산", "vibe": "맛집", "who": "친구", "t": "성산 친구들 먹방 & 일출봉 투어", "e": "🌋", "s": "성산일출봉 + 동쪽 제주 맛집 투어", "b": ["친구", "성산", "일출봉"], "base_ss": [{"ti": "08:00", "ty": "activity", "ic": "🌋", "n": "성산일출봉 트레킹", "d": "성산일출봉 정상 트레킹. 분화구와 우도 전망 장관.", "tg": ["성산일출봉", "분화구"], "st": 4.9, "cost": 5000}, {"ti": "11:00", "ty": "meal", "ic": "🍜", "n": "성산 고기국수·수산시장", "d": "성산 수산시장 근처에서 고기국수 한 그릇.", "tg": ["성산", "고기국수"], "st": 4.7, "cost": 10000}, {"ti": "13:30", "ty": "activity", "ic": "⛵", "n": "우도 페리 & 관광", "d": "우도 페리 타고 당일 관광. 땅콩 아이스크림·우도 해변.", "tg": ["우도", "페리"], "st": 4.8, "cost": 15000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "16:30", "ty": "cafe", "ic": "🍊", "n": "성산 감귤·우도 카페", "d": "감귤 음료와 디저트.", "tg": ["감귤카페", "우도"], "st": 4.6, "cost": 8000}}, {"min_tier": 2, "stop": {"ti": "18:00", "ty": "meal", "ic": "🦀", "n": "성산 해산물 식당 저녁", "d": "성산 근처 싱싱한 해산물 식당.", "tg": ["해산물", "성산"], "st": 4.7, "cost": 22000}}, {"min_tier": 3, "stop": {"ti": "19:30", "ty": "night", "ic": "🍺", "n": "성산 로컬 포차 제주소주", "d": "성산 로컬 포차에서 제주 소주와 안주.", "tg": ["로컬포차", "제주소주"], "st": 4.5, "cost": 15000}}], "bg": [{"l": "🌋 일출봉", "a": "~5천원"}, {"l": "🍜 고기국수", "a": "~1만원"}, {"l": "⛵ 우도 페리", "a": "~1.5만원"}], "base": 30000, "tips": [{"i": "🚗", "t": "렌터카 필수"}, {"i": "⏰", "t": "일출봉 이른 아침이 가장 한산"}, {"i": "⛵", "t": "우도 페리 마지막 배 시간 꼭 확인!"}, {"i": "💡", "t": "우도 자전거 대여 추천"}]}, {"city": "제주", "district": "서귀포", "vibe": "자연", "who": "연인", "t": "서귀포 커플 자연 힐링 코스", "e": "🌺", "s": "서귀포 폭포·오름·바다 커플 투어", "b": ["커플", "서귀포", "자연힐링"], "base_ss": [{"ti": "09:00", "ty": "activity", "ic": "💦", "n": "천지연폭포 & 정방폭포", "d": "서귀포 명품 폭포 산책.", "tg": ["천지연폭포", "정방폭포"], "st": 4.7, "cost": 2000}, {"ti": "11:30", "ty": "meal", "ic": "🥗", "n": "서귀포 브런치 카페", "d": "서귀포 감성 카페에서 브런치.", "tg": ["서귀포카페", "브런치"], "st": 4.6, "cost": 16000}, {"ti": "14:30", "ty": "activity", "ic": "🌿", "n": "사려니숲길 커플 트레킹", "d": "사려니숲길 커플 산책. 피톤치드 가득.", "tg": ["사려니숲길", "트레킹"], "st": 4.8, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:00", "ty": "cafe", "ic": "☕", "n": "서귀포 감귤 카페", "d": "서귀포 감귤 주스와 한라봉 디저트.", "tg": ["감귤주스", "한라봉"], "st": 4.7, "cost": 9000}}, {"min_tier": 2, "stop": {"ti": "18:30", "ty": "meal", "ic": "🍷", "n": "서귀포 오션뷰 레스토랑", "d": "서귀포 바다 뷰 레스토랑에서 제주 코스 요리.", "tg": ["오션뷰", "코스요리"], "st": 4.8, "cost": 55000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🌃", "n": "서귀포 야경 칠십리 산책", "d": "서귀포 칠십리 해안도로 야경 산책.", "tg": ["야경산책", "칠십리"], "st": 4.7, "cost": 0}}], "bg": [{"l": "💦 폭포 입장료", "a": "~2천원"}, {"l": "🥗 브런치", "a": "~1.6만원"}, {"l": "🌿 사려니숲", "a": "무료"}], "base": 18000, "tips": [{"i": "🚗", "t": "렌터카 필수"}, {"i": "💡", "t": "사려니숲 성수기 예약 필수"}, {"i": "⏰", "t": "천지연폭포 야간 개장도 운영"}, {"i": "🌺", "t": "서귀포 한라봉 시즌에 더 맛있어요"}]}, {"city": "여수", "district": "이순신광장·진남로", "vibe": "맛집", "who": "혼자", "t": "여수 혼자 낭만 맛집 투어", "e": "🦀", "s": "이순신광장 & 진남로 혼자 맛집 탐방", "b": ["혼자", "여수", "낭만포차"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🦀", "n": "로타리식당 현지인 가성비 한상", "d": "여수 현지인 전설 가성비 식당. 게장·불고기·반찬 1만원 안팎.", "tg": ["로타리식당", "게장"], "st": 4.3, "cost": 10000}, {"ti": "13:00", "ty": "meal", "ic": "🍜", "n": "여수 메밀식당 유자비빔막국수", "d": "이순신광장 바로 옆. 유자비빔막국수 시그니처.", "tg": ["메밀식당", "막국수"], "st": 4.9, "cost": 9000}, {"ti": "18:00", "ty": "night", "ic": "🌃", "n": "여수 낭만포차 야시장", "d": "해산물·막걸리·야경 한 번에! 오후 6시~새벽 1시.", "tg": ["낭만포차", "야시장"], "st": 4.2, "cost": 15000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "14:30", "ty": "cafe", "ic": "☕", "n": "진남로 카페 골목 디저트", "d": "진남로 쇼핑거리 카페에서 딸기 음료와 크로캉.", "tg": ["진남로", "카페"], "st": 4.7, "cost": 7000}}, {"min_tier": 2, "stop": {"ti": "16:00", "ty": "activity", "ic": "🚶", "n": "이순신광장·여수해양공원 산책", "d": "이순신 광장에서 여수 해양공원까지 산책.", "tg": ["이순신광장", "해양공원"], "st": 4.6, "cost": 0}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🦑", "n": "낭만포차 해산물 추가 코스", "d": "포차에서 해산물 코스 추가. 오징어·소라·전복.", "tg": ["포차", "해산물코스"], "st": 4.5, "cost": 20000}}], "bg": [{"l": "🦀 로타리식당", "a": "~1만원"}, {"l": "🍜 메밀식당", "a": "~9천원"}, {"l": "🌃 포차", "a": "~1.5만원"}], "base": 34000, "tips": [{"i": "⏰", "t": "로타리식당 오픈 전 줄 서야 해요"}, {"i": "🚶", "t": "이순신광장~진남로 도보 이동 가능"}, {"i": "💳", "t": "포차는 현금 준비가 좋아요"}, {"i": "🧥", "t": "바닷바람 겉옷 챙기기"}]}, {"city": "여수", "district": "이순신광장·진남로", "vibe": "맛집", "who": "친구", "t": "여수 친구들 낭만 먹방 투어", "e": "🍺", "s": "친구들이랑 여수 해산물 + 포차 풀코스", "b": ["친구", "여수", "낭만포차"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🦀", "n": "로타리식당 한상 가득", "d": "여수 현지인 전설 가성비 식당.", "tg": ["로타리식당", "게장"], "st": 4.3, "cost": 10000}, {"ti": "13:30", "ty": "activity", "ic": "🚡", "n": "여수 해상 케이블카", "d": "돌산도 이어지는 해상 케이블카.", "tg": ["해상케이블카", "돌산도"], "st": 4.7, "cost": 13000}, {"ti": "18:30", "ty": "night", "ic": "🍻", "n": "낭만포차 게장·막걸리", "d": "포차에서 여수 게장에 막걸리.", "tg": ["포차", "게장", "막걸리"], "st": 4.5, "cost": 25000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "15:30", "ty": "meal", "ic": "🦑", "n": "돌산도 갓김치·해산물", "d": "돌산도 갓김치와 해산물 요리.", "tg": ["돌산도", "갓김치"], "st": 4.6, "cost": 18000}}, {"min_tier": 2, "stop": {"ti": "14:30", "ty": "cafe", "ic": "☕", "n": "진남로 카페 골목", "d": "진남로 카페에서 쉬어가기.", "tg": ["진남로", "카페"], "st": 4.7, "cost": 7000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🦑", "n": "낭만포차 해산물 추가", "d": "포차에서 해산물 코스 추가.", "tg": ["포차", "해산물코스"], "st": 4.5, "cost": 20000}}], "bg": [{"l": "🦀 로타리식당", "a": "~1만원"}, {"l": "🚡 케이블카", "a": "~1.3만원"}, {"l": "🍺 포차", "a": "~2.5만원"}], "base": 48000, "tips": [{"i": "⏰", "t": "케이블카 주말 예약 필수!"}, {"i": "🚶", "t": "돌산도 이동 시간 여유 있게"}, {"i": "⏰", "t": "포차 게장은 일찍 가야 신선"}, {"i": "✨", "t": "엑스포 광장 야경도 예뻐요"}]}, {"city": "여수", "district": "이순신광장·진남로", "vibe": "맛집", "who": "연인", "t": "여수 커플 낭만 바다 코스", "e": "🌊", "s": "바다와 야경이 아름다운 여수 커플", "b": ["커플", "여수", "낭만야경"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🥞", "n": "여수 시내 브런치 카페", "d": "여수 시내 감성 카페에서 브런치. 바다 뷰 창가 자리.", "tg": ["브런치", "뷰카페"], "st": 4.6, "cost": 16000}, {"ti": "13:30", "ty": "activity", "ic": "🚡", "n": "여수 해상 케이블카 커플", "d": "커플 여행 필수! 하늘에서 보는 여수 바다.", "tg": ["케이블카", "커플"], "st": 4.7, "cost": 13000}, {"ti": "19:00", "ty": "night", "ic": "✨", "n": "오동도·엑스포 야경 산책", "d": "오동도 산책로 야경. 엑스포해양공원 야경도 예뻐요.", "tg": ["오동도", "야경"], "st": 4.7, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "15:30", "ty": "meal", "ic": "🦞", "n": "돌산도 꽃게탕·전어회", "d": "돌산도 꽃게탕이나 전어회 강력 추천.", "tg": ["돌산도", "꽃게탕"], "st": 4.6, "cost": 35000}}, {"min_tier": 2, "stop": {"ti": "17:30", "ty": "cafe", "ic": "☕", "n": "여수 오션뷰 카페 선셋", "d": "오션뷰 카페에서 여수 일몰 감상.", "tg": ["오션뷰카페", "선셋"], "st": 4.7, "cost": 9000}}, {"min_tier": 3, "stop": {"ti": "21:00", "ty": "night", "ic": "🍸", "n": "여수 낭만 바 칵테일", "d": "여수 바다뷰 바에서 칵테일 한 잔.", "tg": ["바", "칵테일"], "st": 4.6, "cost": 25000}}], "bg": [{"l": "🥞 브런치", "a": "~1.6만원"}, {"l": "🚡 케이블카", "a": "~1.3만원"}, {"l": "✨ 오동도 야경", "a": "무료"}], "base": 29000, "tips": [{"i": "⏰", "t": "케이블카 예약 미리 해두세요"}, {"i": "💡", "t": "돌산도 해산물 흥정 가능"}, {"i": "⏰", "t": "오동도 야간 입장 시간 확인"}, {"i": "✨", "t": "엑스포 해양공원도 추천"}]}, {"city": "여수", "district": "돌산도·오동도", "vibe": "자연", "who": "연인", "t": "돌산도 커플 자연 힐링", "e": "🌊", "s": "돌산도 따라 커플 자연 투어", "b": ["커플", "돌산도", "자연힐링"], "base_ss": [{"ti": "10:00", "ty": "activity", "ic": "🌊", "n": "오동도 동백 숲 산책", "d": "동백꽃 가득한 오동도 산책.", "tg": ["오동도", "동백"], "st": 4.6, "cost": 0}, {"ti": "12:00", "ty": "meal", "ic": "🦞", "n": "돌산도 전어회·꽃게탕", "d": "돌산도 싱싱한 전어회나 꽃게탕.", "tg": ["돌산도", "전어회"], "st": 4.7, "cost": 35000}, {"ti": "15:00", "ty": "activity", "ic": "🚡", "n": "여수 해상 케이블카", "d": "커플 여행 필수! 케이블카에서 바라보는 여수 바다.", "tg": ["해상케이블카", "바다뷰"], "st": 4.7, "cost": 13000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:00", "ty": "cafe", "ic": "☕", "n": "돌산도 뷰 카페 선셋", "d": "돌산도 카페에서 선셋 감상.", "tg": ["뷰카페", "선셋"], "st": 4.5, "cost": 8000}}, {"min_tier": 2, "stop": {"ti": "19:00", "ty": "night", "ic": "✨", "n": "오동도 야경 산책", "d": "오동도 야경 산책로 따라 커플 산책.", "tg": ["오동도야경", "산책"], "st": 4.7, "cost": 0}}, {"min_tier": 3, "stop": {"ti": "20:30", "ty": "night", "ic": "🦑", "n": "낭만포차 야간 해산물", "d": "낭만포차에서 해산물과 막걸리로 마무리.", "tg": ["낭만포차", "해산물"], "st": 4.5, "cost": 20000}}], "bg": [{"l": "🌊 오동도", "a": "무료"}, {"l": "🦞 해산물", "a": "~3.5만원"}, {"l": "🚡 케이블카", "a": "~1.3만원"}], "base": 48000, "tips": [{"i": "💡", "t": "오동도 동백꽃 겨울~봄이 절정"}, {"i": "⏰", "t": "케이블카 주말 예약 필수!"}, {"i": "🧥", "t": "바닷바람 겉옷 챙기기"}, {"i": "💡", "t": "야시장 현금 준비하면 편해요"}]}, {"city": "경주", "district": "황리단길", "vibe": "맛집", "who": "연인", "t": "황리단길 커플 역사 데이트", "e": "🏛️", "s": "경주 황리단길 핫플 커플 코스", "b": ["커플", "황리단길", "역사데이트"], "base_ss": [{"ti": "10:00", "ty": "meal", "ic": "🥗", "n": "황리단길 한옥 브런치 카페", "d": "황리단길 한옥 개조 브런치 카페.", "tg": ["황리단길", "한옥카페"], "st": 4.7, "cost": 15000}, {"ti": "13:00", "ty": "meal", "ic": "🍱", "n": "경주 비빔밥·한정식", "d": "경주 전통 비빔밥 맛집에서 점심.", "tg": ["경주비빔밥", "한정식"], "st": 4.7, "cost": 13000}, {"ti": "15:00", "ty": "activity", "ic": "🏛️", "n": "불국사·석굴암 커플 관람", "d": "유네스코 불국사와 석굴암 커플 탐방.", "tg": ["불국사", "석굴암"], "st": 4.9, "cost": 12000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:30", "ty": "cafe", "ic": "🍩", "n": "황남빵 & 경주빵 카페", "d": "황남빵 본점 + 황리단길 카페에서 경주 명물 간식.", "tg": ["황남빵", "경주빵"], "st": 4.8, "cost": 7000}}, {"min_tier": 2, "stop": {"ti": "19:00", "ty": "night", "ic": "✨", "n": "동궁과 월지 야경 데이트", "d": "안압지 야간 조명. 경주 최고 로맨틱 스팟.", "tg": ["안압지야경", "로맨틱"], "st": 4.9, "cost": 3000}}, {"min_tier": 3, "stop": {"ti": "20:30", "ty": "night", "ic": "🍷", "n": "황리단길 와인바·이자카야", "d": "황리단길 분위기 있는 와인바.", "tg": ["와인바", "황리단길"], "st": 4.6, "cost": 25000}}], "bg": [{"l": "🥗 브런치", "a": "~1.5만원"}, {"l": "🏛️ 불국사+석굴암", "a": "~1.2만원"}, {"l": "🍱 점심", "a": "~1.3만원"}], "base": 40000, "tips": [{"i": "🚗", "t": "경주 자전거 or 렌터카 추천"}, {"i": "⏰", "t": "불국사 오전 일찍 가야 한산"}, {"i": "💡", "t": "안압지 야경 해 진 직후가 베스트"}, {"i": "🌸", "t": "봄엔 황리단길 벚꽃 예뻐요"}]}, {"city": "경주", "district": "황리단길", "vibe": "문화", "who": "친구", "t": "경주 친구들 역사 & 먹방 투어", "e": "🏺", "s": "대릉원 자전거 + 황리단길 먹방", "b": ["친구", "경주", "역사탐방"], "base_ss": [{"ti": "10:00", "ty": "activity", "ic": "🚲", "n": "대릉원·첨성대 자전거 투어", "d": "대릉원 신라 고분과 첨성대 자전거로 투어.", "tg": ["대릉원", "첨성대"], "st": 4.8, "cost": 10000}, {"ti": "12:30", "ty": "meal", "ic": "🍱", "n": "교리김밥·경주 로컬 점심", "d": "경주 명물 교리김밥 + 쌈밥.", "tg": ["교리김밥", "쌈밥"], "st": 4.7, "cost": 8000}, {"ti": "14:30", "ty": "cafe", "ic": "🍩", "n": "황남빵·황리단길 카페 투어", "d": "황남빵 본점 + 황리단길 힙 카페 투어.", "tg": ["황남빵", "황리단길카페"], "st": 4.8, "cost": 9000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "16:30", "ty": "activity", "ic": "🏛️", "n": "국립경주박물관 관람", "d": "국립경주박물관에서 신라 황금 유물 관람.", "tg": ["국립경주박물관", "신라"], "st": 4.8, "cost": 0}}, {"min_tier": 2, "stop": {"ti": "18:30", "ty": "meal", "ic": "🍺", "n": "황리단길 막걸리·경주법주", "d": "황리단길 막걸리 골목에서 경주 법주와 안주.", "tg": ["막걸리", "경주법주"], "st": 4.6, "cost": 18000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🌙", "n": "동궁과 월지 야경", "d": "안압지 야경 관람.", "tg": ["안압지", "야경"], "st": 4.9, "cost": 3000}}], "bg": [{"l": "🚲 자전거", "a": "~1만원"}, {"l": "🍱 교리김밥", "a": "~8천원"}, {"l": "🍩 황남빵", "a": "~9천원"}], "base": 27000, "tips": [{"i": "🚲", "t": "자전거 대여는 경주역 근처 추천"}, {"i": "⏰", "t": "교리김밥 오전 일찍 가야 품절 없어요"}, {"i": "💡", "t": "박물관 무료 입장"}, {"i": "🌙", "t": "안압지 야경 필수!"}]}, {"city": "강릉", "district": "경포·안목", "vibe": "맛집", "who": "혼자", "t": "강릉 혼자 커피·바다 힐링", "e": "☕", "s": "커피 도시 강릉 혼자 감성 투어", "b": ["혼자", "강릉", "커피힐링"], "base_ss": [{"ti": "10:00", "ty": "cafe", "ic": "☕", "n": "테라로사 강릉 본점", "d": "강릉 커피 성지 테라로사 본점.", "tg": ["테라로사", "커피"], "st": 4.8, "cost": 9000}, {"ti": "12:00", "ty": "meal", "ic": "🍽️", "n": "초당두부 순두부찌개", "d": "강릉 명물 초당두부.", "tg": ["초당두부", "순두부"], "st": 4.8, "cost": 10000}, {"ti": "15:00", "ty": "cafe", "ic": "🌅", "n": "안목 커피거리 노을 카페", "d": "안목 커피거리에서 바다 보며 커피.", "tg": ["안목커피거리", "노을"], "st": 4.8, "cost": 8000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "13:30", "ty": "activity", "ic": "🌊", "n": "경포해수욕장 산책", "d": "경포해수욕장 따라 혼자 산책.", "tg": ["경포해수욕장", "산책"], "st": 4.7, "cost": 0}}, {"min_tier": 2, "stop": {"ti": "17:00", "ty": "meal", "ic": "🦀", "n": "강릉항 물회·해산물", "d": "강릉항에서 동해 신선한 물회·해산물.", "tg": ["강릉항", "물회"], "st": 4.7, "cost": 18000}}, {"min_tier": 3, "stop": {"ti": "19:00", "ty": "night", "ic": "🌃", "n": "안목 야경 해변 산책", "d": "안목 해변 야경 산책.", "tg": ["야경산책", "안목"], "st": 4.7, "cost": 0}}], "bg": [{"l": "☕ 테라로사", "a": "~9천원"}, {"l": "🍽️ 초당두부", "a": "~1만원"}, {"l": "☕ 안목커피", "a": "~8천원"}], "base": 27000, "tips": [{"i": "🚂", "t": "KTX 강릉역 편리"}, {"i": "⏰", "t": "테라로사 주말 웨이팅 각오"}, {"i": "💡", "t": "초당두부는 오전이 신선해요"}, {"i": "⏰", "t": "안목 커피거리 일몰 시간 베스트"}]}, {"city": "강릉", "district": "경포·안목", "vibe": "맛집", "who": "친구", "t": "강릉 친구들 커피·해산물 풀코스", "e": "🦀", "s": "강릉 커피+동해 해산물 친구 투어", "b": ["친구", "강릉", "해산물커피"], "base_ss": [{"ti": "10:00", "ty": "cafe", "ic": "☕", "n": "강릉 커피거리 카페 투어", "d": "테라로사·보헤미안·카페빈 강릉 커피 성지 탐방.", "tg": ["테라로사", "보헤미안"], "st": 4.8, "cost": 15000}, {"ti": "12:00", "ty": "meal", "ic": "🍽️", "n": "초당두부·두부김치 점심", "d": "초당두부 순두부찌개+두부김치 콤보.", "tg": ["초당두부", "두부김치"], "st": 4.8, "cost": 10000}, {"ti": "18:00", "ty": "night", "ic": "🦀", "n": "주문진항 대게·물회·오징어", "d": "주문진항에서 대게·물회·오징어.", "tg": ["주문진항", "대게"], "st": 4.8, "cost": 30000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "14:00", "ty": "activity", "ic": "🌊", "n": "경포 카약·패들보드 체험", "d": "경포에서 카약·패들보드 체험.", "tg": ["경포", "카약"], "st": 4.7, "cost": 20000}}, {"min_tier": 2, "stop": {"ti": "16:30", "ty": "activity", "ic": "🏄", "n": "강문해변 서핑 체험", "d": "강문해변에서 서핑 체험.", "tg": ["강문해변", "서핑"], "st": 4.7, "cost": 25000}}, {"min_tier": 3, "stop": {"ti": "20:30", "ty": "night", "ic": "🍺", "n": "강릉 수제맥주 펍", "d": "강릉 로컬 수제맥주 펍에서 마무리.", "tg": ["수제맥주", "로컬펍"], "st": 4.6, "cost": 18000}}], "bg": [{"l": "☕ 커피투어", "a": "~1.5만원"}, {"l": "🍽️ 초당두부", "a": "~1만원"}, {"l": "🦀 대게", "a": "~3만원"}], "base": 55000, "tips": [{"i": "🚂", "t": "KTX 강릉역"}, {"i": "💡", "t": "주문진 대게 제철(11~5월) 확인"}, {"i": "⏰", "t": "커피거리 주말은 일찍"}, {"i": "💡", "t": "서핑·카약 사전 예약 추천"}]}, {"city": "전주", "district": "한옥마을", "vibe": "맛집", "who": "혼자", "t": "전주 혼자 한식 성지 투어", "e": "🍚", "s": "비빔밥의 고향 전주 로컬 한식 투어", "b": ["혼자", "전주", "한식성지"], "base_ss": [{"ti": "10:00", "ty": "meal", "ic": "🍚", "n": "전주 비빔밥 성지·한국관", "d": "전주 비빔밥 본고장. 한국관에서 전주 정식.", "tg": ["전주비빔밥", "한국관"], "st": 4.8, "cost": 13000}, {"ti": "12:00", "ty": "cafe", "ic": "🍩", "n": "풍년제과 초코파이", "d": "전주 명물 풍년제과 초코파이.", "tg": ["풍년제과", "초코파이"], "st": 4.7, "cost": 5000}, {"ti": "14:00", "ty": "activity", "ic": "🏮", "n": "한옥마을 골목 산책", "d": "전주 한옥마을 700여 채 한옥 골목 구경.", "tg": ["전주한옥마을", "골목"], "st": 4.8, "cost": 0}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "16:00", "ty": "cafe", "ic": "☕", "n": "한옥마을 감성 카페", "d": "한옥 개조 감성 카페에서 커피 타임.", "tg": ["한옥카페", "감성"], "st": 4.7, "cost": 7000}}, {"min_tier": 2, "stop": {"ti": "18:00", "ty": "meal", "ic": "🍺", "n": "삼천동 막걸리 골목", "d": "삼천동 막걸리 골목에서 콩나물국밥+막걸리.", "tg": ["막걸리골목", "콩나물국밥"], "st": 4.7, "cost": 13000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🌃", "n": "한옥마을 야경 산책", "d": "한옥마을 야경 산책.", "tg": ["야경산책", "한옥"], "st": 4.7, "cost": 0}}], "bg": [{"l": "🍚 비빔밥", "a": "~1.3만원"}, {"l": "🍩 풍년제과", "a": "~5천원"}, {"l": "🏮 한옥마을", "a": "무료"}], "base": 18000, "tips": [{"i": "🚌", "t": "KTX 전주역 버스 이용"}, {"i": "⏰", "t": "한옥마을 오전이 한산"}, {"i": "💡", "t": "풍년제과 오전에 가야 구매 가능"}, {"i": "💡", "t": "막걸리 골목 저녁 일찍 자리 잡기"}]}, {"city": "전주", "district": "한옥마을", "vibe": "맛집", "who": "친구", "t": "전주 친구들 한식 & 막걸리 투어", "e": "🍺", "s": "전주 한식 성지 + 막걸리 풀코스", "b": ["친구", "전주", "막걸리투어"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🍚", "n": "남부시장 청년몰 먹거리", "d": "전주 남부시장 청년몰에서 순대·비빔밥·피순대.", "tg": ["남부시장", "청년몰"], "st": 4.7, "cost": 10000}, {"ti": "13:00", "ty": "activity", "ic": "🏮", "n": "한옥마을 한복 체험 & 산책", "d": "한복 입고 한옥마을 골목 데이트.", "tg": ["한복체험", "한옥마을"], "st": 4.8, "cost": 15000}, {"ti": "18:30", "ty": "meal", "ic": "🍺", "n": "삼천동 막걸리 골목 투어", "d": "삼천동 막걸리 골목에서 콩나물국밥+막걸리.", "tg": ["막걸리골목", "삼천동"], "st": 4.7, "cost": 18000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "15:00", "ty": "cafe", "ic": "🍩", "n": "풍년제과·남부시장 간식 투어", "d": "풍년제과 초코파이 + 남부시장 길거리 간식.", "tg": ["풍년제과", "간식"], "st": 4.6, "cost": 8000}}, {"min_tier": 2, "stop": {"ti": "16:30", "ty": "activity", "ic": "🏺", "n": "전주 전통 공방 체험", "d": "한지·도자기·전통 공예 체험.", "tg": ["전통공방", "체험"], "st": 4.6, "cost": 12000}}, {"min_tier": 3, "stop": {"ti": "20:30", "ty": "night", "ic": "🎭", "n": "전주 전통 국악 공연 관람", "d": "전주 전통 국악 공연 or 창 공연.", "tg": ["국악공연", "창"], "st": 4.7, "cost": 10000}}], "bg": [{"l": "🍚 남부시장", "a": "~1만원"}, {"l": "👘 한복대여", "a": "~1.5만원"}, {"l": "🍺 막걸리", "a": "~1.8만원"}], "base": 43000, "tips": [{"i": "💡", "t": "한복 대여 사전 예약 추천"}, {"i": "⏰", "t": "한옥마을 오전이 한산"}, {"i": "💡", "t": "막걸리 골목 저녁 일찍 가야"}, {"i": "🚌", "t": "KTX 전주역 버스 이용"}]}, {"city": "춘천", "district": "명동·공지천", "vibe": "맛집", "who": "혼자", "t": "춘천 혼자 닭갈비·막국수 투어", "e": "🍗", "s": "닭갈비 고향 춘천 혼자 로컬 코스", "b": ["혼자", "춘천", "닭갈비막국수"], "base_ss": [{"ti": "11:00", "ty": "meal", "ic": "🍗", "n": "춘천 명동 닭갈비 골목 원조", "d": "춘천 명동 닭갈비 골목 원조 닭갈비.", "tg": ["닭갈비골목", "원조"], "st": 4.7, "cost": 12000}, {"ti": "13:00", "ty": "cafe", "ic": "☕", "n": "의암호 강변 카페", "d": "의암호 강변 카페에서 호수 뷰 커피.", "tg": ["의암호", "강변카페"], "st": 4.6, "cost": 7000}, {"ti": "18:00", "ty": "meal", "ic": "🍜", "n": "샘밭막국수 저녁", "d": "춘천 막국수 성지. 시원한 동치미 국물이 일품.", "tg": ["샘밭막국수", "동치미"], "st": 4.8, "cost": 9000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "14:30", "ty": "activity", "ic": "🚡", "n": "강촌 레일바이크", "d": "강촌 레일바이크. 북한강변 경치.", "tg": ["강촌레일바이크", "북한강"], "st": 4.8, "cost": 15000}}, {"min_tier": 2, "stop": {"ti": "16:30", "ty": "activity", "ic": "🦆", "n": "공지천 유원지 붕어빵", "d": "공지천 유원지 산책하고 붕어빵.", "tg": ["공지천", "붕어빵"], "st": 4.5, "cost": 3000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🍺", "n": "춘천 수제맥주·포차", "d": "춘천 로컬 수제맥주 펍에서 마무리.", "tg": ["수제맥주", "포차"], "st": 4.5, "cost": 15000}}], "bg": [{"l": "🍗 닭갈비", "a": "~1.2만원"}, {"l": "☕ 카페", "a": "~7천원"}, {"l": "🍜 막국수", "a": "~9천원"}], "base": 28000, "tips": [{"i": "🚂", "t": "ITX-청춘 또는 버스 1.5시간"}, {"i": "⏰", "t": "닭갈비 골목 오픈 전 방문 추천"}, {"i": "💡", "t": "레일바이크 사전 예약 추천"}, {"i": "💡", "t": "막국수는 점심 피크 피해서"}]}, {"city": "춘천", "district": "명동·공지천", "vibe": "맛집", "who": "친구", "t": "춘천 친구들 액티비티 먹방", "e": "🎡", "s": "닭갈비+레일바이크+막국수 친구 코스", "b": ["친구", "춘천", "액티비티"], "base_ss": [{"ti": "10:30", "ty": "meal", "ic": "🍗", "n": "춘천 닭갈비 골목 조기 오픈", "d": "춘천 명동 닭갈비 골목. 볶음식 + 사리 추가.", "tg": ["닭갈비", "명동골목"], "st": 4.7, "cost": 12000}, {"ti": "12:30", "ty": "activity", "ic": "🚡", "n": "강촌 레일바이크·짚라인", "d": "강촌 레일바이크 + 짚라인.", "tg": ["강촌레일바이크", "짚라인"], "st": 4.8, "cost": 20000}, {"ti": "18:00", "ty": "meal", "ic": "🍜", "n": "샘밭·유포리 막국수", "d": "춘천 막국수 성지에서 동치미 막국수로 마무리.", "tg": ["샘밭막국수", "유포리"], "st": 4.8, "cost": 9000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "15:00", "ty": "cafe", "ic": "🍦", "n": "공지천 유원지·아이스크림", "d": "공지천 유원지 산책하고 아이스크림.", "tg": ["공지천", "아이스크림"], "st": 4.5, "cost": 5000}}, {"min_tier": 2, "stop": {"ti": "16:30", "ty": "activity", "ic": "🚣", "n": "의암호 카약·보트 체험", "d": "의암호에서 카약이나 보트 체험.", "tg": ["의암호", "카약"], "st": 4.6, "cost": 15000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🍺", "n": "춘천 포차·수제맥주 마무리", "d": "춘천 로컬 포차에서 친구들이랑 마무리.", "tg": ["포차", "수제맥주"], "st": 4.5, "cost": 18000}}], "bg": [{"l": "🍗 닭갈비", "a": "~1.2만원"}, {"l": "🚡 레일바이크", "a": "~2만원"}, {"l": "🍜 막국수", "a": "~9천원"}], "base": 41000, "tips": [{"i": "🚂", "t": "ITX-청춘 이용 추천"}, {"i": "💡", "t": "레일바이크 예약 필수"}, {"i": "⏰", "t": "닭갈비 골목 점심 전 방문 추천"}, {"i": "💡", "t": "강촌역 주변 자전거 대여 가능"}]}, {"city": "속초", "district": "중앙시장·아바이마을", "vibe": "맛집", "who": "혼자", "t": "속초 혼자 시장 & 설악 힐링", "e": "🏔️", "s": "속초 중앙시장 + 설악산 혼자 투어", "b": ["혼자", "속초", "시장힐링"], "base_ss": [{"ti": "10:00", "ty": "meal", "ic": "🦪", "n": "속초 중앙시장 닭강정·수산물", "d": "속초 중앙시장에서 닭강정·오징어·수산물.", "tg": ["속초중앙시장", "닭강정"], "st": 4.8, "cost": 10000}, {"ti": "12:30", "ty": "activity", "ic": "🏔️", "n": "설악산 케이블카·권금성", "d": "설악산 케이블카 타고 권금성 전망 감상.", "tg": ["설악산", "케이블카"], "st": 4.7, "cost": 15000}, {"ti": "15:30", "ty": "cafe", "ic": "☕", "n": "아바이마을 갯배·아바이순대", "d": "아바이마을에서 갯배 체험. 아바이순대.", "tg": ["아바이마을", "갯배"], "st": 4.7, "cost": 8000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "17:30", "ty": "activity", "ic": "🌊", "n": "속초해수욕장·영랑호 산책", "d": "속초해수욕장과 영랑호 산책.", "tg": ["속초해수욕장", "영랑호"], "st": 4.7, "cost": 0}}, {"min_tier": 2, "stop": {"ti": "19:00", "ty": "meal", "ic": "🦀", "n": "대포항 대게·물회 저녁", "d": "대포항에서 싱싱한 대게와 물회.", "tg": ["대포항", "대게"], "st": 4.8, "cost": 30000}}, {"min_tier": 3, "stop": {"ti": "20:30", "ty": "night", "ic": "🌃", "n": "속초 해변 야경 산책", "d": "속초 해변 야경 산책.", "tg": ["야경산책", "속초해변"], "st": 4.6, "cost": 0}}], "bg": [{"l": "🦪 중앙시장", "a": "~1만원"}, {"l": "🏔️ 케이블카", "a": "~1.5만원"}, {"l": "☕ 아바이순대", "a": "~8천원"}], "base": 33000, "tips": [{"i": "🚌", "t": "동서울터미널 고속버스 2.5시간"}, {"i": "⏰", "t": "설악산 케이블카 주말 웨이팅 각오"}, {"i": "💡", "t": "중앙시장 닭강정 오전 일찍"}, {"i": "💡", "t": "아바이마을 갯배 체험 꼭 해보세요"}]}, {"city": "속초", "district": "중앙시장·아바이마을", "vibe": "맛집", "who": "친구", "t": "속초 친구들 동해 먹방 투어", "e": "🦀", "s": "동해 속초 친구들이랑 먹방 풀코스", "b": ["친구", "속초", "동해먹방"], "base_ss": [{"ti": "10:00", "ty": "meal", "ic": "🦪", "n": "속초 중앙시장 새벽 수산물", "d": "속초 중앙시장 가리비·오징어·홍게.", "tg": ["중앙시장", "가리비"], "st": 4.8, "cost": 15000}, {"ti": "12:00", "ty": "meal", "ic": "🍗", "n": "만석닭강정·88닭강정", "d": "속초 명물 닭강정 양대 산맥.", "tg": ["만석닭강정", "88닭강정"], "st": 4.7, "cost": 10000}, {"ti": "18:00", "ty": "meal", "ic": "🦀", "n": "대포항 대게·물회", "d": "대포항에서 싱싱한 대게와 물회.", "tg": ["대포항", "대게"], "st": 4.8, "cost": 30000}], "opt_ss": [{"min_tier": 1, "stop": {"ti": "14:00", "ty": "activity", "ic": "🏔️", "n": "설악산 케이블카 울산바위 뷰", "d": "설악산 케이블카로 울산바위 방향 전망.", "tg": ["설악산", "케이블카"], "st": 4.7, "cost": 15000}}, {"min_tier": 2, "stop": {"ti": "16:30", "ty": "cafe", "ic": "☕", "n": "속초 바다뷰 카페", "d": "속초 해변 바다뷰 카페에서 커피.", "tg": ["바다뷰카페", "속초해변"], "st": 4.6, "cost": 8000}}, {"min_tier": 3, "stop": {"ti": "20:00", "ty": "night", "ic": "🍺", "n": "속초 해변 포차·수제맥주", "d": "속초 해변 포차에서 친구들이랑 마무리.", "tg": ["포차", "수제맥주"], "st": 4.6, "cost": 18000}}], "bg": [{"l": "🦪 수산물", "a": "~1.5만원"}, {"l": "🍗 닭강정", "a": "~1만원"}, {"l": "🦀 대게·물회", "a": "~3만원"}], "base": 55000, "tips": [{"i": "🚌", "t": "동서울터미널 고속버스 2.5시간"}, {"i": "⏰", "t": "대포항 대게 시세 미리 확인"}, {"i": "💡", "t": "케이블카 예약 or 이른 방문"}, {"i": "💡", "t": "중앙시장 오전 일찍 가야 신선"}]}];
+var CITY_META = {"서울": {"e": "🏙️", "districts": ["연남동", "성수동", "한남동", "홍대", "을지로"]}, "부산": {"e": "🌊", "districts": ["해운대", "광안리", "남포동·자갈치", "전포동"]}, "제주": {"e": "🍊", "districts": ["애월", "성산", "서귀포"]}, "여수": {"e": "🦀", "districts": ["이순신광장·진남로", "돌산도·오동도"]}, "경주": {"e": "🏛️", "districts": ["황리단길"]}, "강릉": {"e": "☕", "districts": ["경포·안목"]}, "전주": {"e": "🍚", "districts": ["한옥마을"]}, "춘천": {"e": "🍗", "districts": ["명동·공지천"]}, "속초": {"e": "🏔️", "districts": ["중앙시장·아바이마을"]}};
+var PAL = {"서울": {"bg": "linear-gradient(135deg,#ffb3c6,#ffc8dd)", "h": "#ff8fab", "lt": "#ffd6e7"}, "부산": {"bg": "linear-gradient(135deg,#a2d2ff,#bde0fe)", "h": "#4895ef", "lt": "#bde0fe"}, "제주": {"bg": "linear-gradient(135deg,#52b788,#95d5b2)", "h": "#52b788", "lt": "#caffbf"}, "여수": {"bg": "linear-gradient(135deg,#4895ef,#90e0ef)", "h": "#0096c7", "lt": "#90e0ef"}, "경주": {"bg": "linear-gradient(135deg,#c77dff,#e0aaff)", "h": "#9d4edd", "lt": "#e0aaff"}, "강릉": {"bg": "linear-gradient(135deg,#ffd166,#ffb347)", "h": "#f4a261", "lt": "#ffdd9a"}, "전주": {"bg": "linear-gradient(135deg,#ff6b6b,#ffa07a)", "h": "#e63946", "lt": "#ffb3b3"}, "춘천": {"bg": "linear-gradient(135deg,#74c69d,#b7e4c7)", "h": "#52b788", "lt": "#caffbf"}, "속초": {"bg": "linear-gradient(135deg,#0077b6,#00b4d8)", "h": "#0096c7", "lt": "#90e0ef"}};
+var TS = {"meal": {"bg": "#fff0f3", "co": "#e06080", "lb": "식사"}, "cafe": {"bg": "#f5f0ff", "co": "#9060c0", "lb": "카페"}, "activity": {"bg": "#f0fff4", "co": "#3a8a5a", "lb": "관광"}, "night": {"bg": "#f0f5ff", "co": "#4060c0", "lb": "저녁"}};
+
+var ML = [0.6,0.8,1.0,1.3,1.6];
+var BL = [2,3,5,7,10,15,20];
+var MLBL = ["▼ -40%","▼ -20%","기준","▲ +30%","▲ +60%"];
+var ATIPS = [
+  "대중교통 위주 + 편의점·시장으로 절약해봐요",
+  "가격 착한 로컬 식당 위주로 즐겨보세요",
+  "현재 코스 기준 예상 금액이에요",
+  "맛집 예약제 식당이나 액티비티를 추가해보세요!",
+  "프리미엄 레스토랑 & 특별 체험까지 즐기는 코스 ✨"
+];
+var ANOTICE = [
+  "💡 절약 코스: 기본 스팟만! 대중교통+편의점으로 충분해요.",
+  "💡 알뜰 코스: 기본 코스에서 알차게 즐겨보세요.",
+  "✅ 현재 코스 그대로 즐겨보세요!",
+  "✨ 업그레이드! 선택 스팟이 추가돼요.",
+  "👑 프리미엄! 모든 선택 스팟이 추가돼요."
+];
+var VIBE_META = {
+  "맛집": {e:"🍽️", s:"로컬 맛집 & 카페 탐방"},
+  "자연": {e:"🏔️", s:"트레킹·바다·힐링"},
+  "문화": {e:"🏛️", s:"미술관·역사·랜드마크"}
+};
+var WHO_META = [
+  {e:"🧍", t:"혼자",  s:"나홀로 자유여행"},
+  {e:"💑", t:"연인",  s:"로맨틱 데이트"},
+  {e:"👯", t:"친구",  s:"왁자지껄 친구여행"},
+  {e:"👨‍👩‍👧", t:"가족", s:"온 가족 함께"}
+];
+
+// ── 상태 ──────────────────────────────────────────
+var currentCourse = null;
+var currentBase   = 0;
+
+// ans: 선택 값 저장
+// steps: 현재 활성 스텝 배열 (동적)
+var ans   = {};
+var steps = [];  // [{id, ch, cc, q, opts}]  or  {id:"budget", ...}
+var step  = 0;
+
+// ── 스텝 배열 재구성 ──────────────────────────────
+// 항상 호출 시점의 ans 기준으로 전체 스텝 재계산
+function rebuildSteps() {
+  steps = [];
+
+  // STEP 0: 도시
+  steps.push({
+    id: "city",
+    ch: "📍 도시", cc: "#ff8fab",
+    q:  "어느 도시로 떠나시나요?",
+    opts: Object.keys(CITY_META).map(function(city) {
+      return {e: CITY_META[city].e, t: city, s: CITY_META[city].districts.join(" · ")};
+    })
+  });
+
+  // STEP 1: 동네 (도시 선택된 경우만, 동네 2개 이상일 때만)
+  if (ans.city) {
+    var dlist = CITY_META[ans.city] ? CITY_META[ans.city].districts : [];
+    if (dlist.length >= 2) {
+      steps.push({
+        id: "district",
+        ch: "📌 동네", cc: "#c77dff",
+        q:  ans.city + "의 어느 동네로 가실 건가요?",
+        opts: dlist.map(function(d) {
+          // 해당 동네 가능한 스타일 목록
+          var vs = [];
+          for (var i = 0; i < COURSES.length; i++) {
+            var c = COURSES[i];
+            if (c.city === ans.city && c.district === d && vs.indexOf(c.vibe) === -1) {
+              vs.push(c.vibe);
+            }
+          }
+          return {e: "📌", t: d, s: vs.join(" · ")};
+        })
+      });
+    } else if (dlist.length === 1) {
+      // 동네 1개면 자동 선택 (스텝 안 보임)
+      ans.district = dlist[0];
+    }
+  }
+
+  // STEP 2: 여행 스타일 (도시+동네 선택된 경우)
+  if (ans.city) {
+    var district = ans.district || (CITY_META[ans.city] ? CITY_META[ans.city].districts[0] : null);
+    var availVibes = [];
+    if (district) {
+      for (var i = 0; i < COURSES.length; i++) {
+        var c = COURSES[i];
+        if (c.city === ans.city && c.district === district && availVibes.indexOf(c.vibe) === -1) {
+          availVibes.push(c.vibe);
+        }
+      }
+    }
+    // 없으면 전체 보여줌
+    if (availVibes.length === 0) availVibes = ["맛집","자연","문화"];
+    steps.push({
+      id: "vibe",
+      ch: "🎯 스타일", cc: "#ffd166",
+      q:  "어떤 여행을 원하시나요?",
+      opts: availVibes.map(function(v) {
+        return {e: VIBE_META[v].e, t: v, s: VIBE_META[v].s};
+      })
+    });
+  }
+
+  // STEP 3: 동행 (스타일 선택된 경우)
+  if (ans.vibe || ans.city) {
+    steps.push({
+      id: "who",
+      ch: "👥 동행", cc: "#caffbf",
+      q:  "누구랑 함께 가세요?",
+      opts: WHO_META
+    });
+  }
+
+  // STEP 4: 예산 (항상 마지막)
+  if (ans.who || ans.city) {
+    steps.push({id: "budget", ch: "💰 예산", cc: "#ffb3c6", q: "하루 예산을 설정해주세요 (1인)"});
+  }
+}
+
+// ── dots 렌더링 ────────────────────────────────────
+function renderDots() {
+  var total = steps.length;
+  var html  = "";
+  for (var i = 0; i < total; i++) {
+    var cls = "dot";
+    if (i === step) cls += " on";
+    else if (i < step) cls += " dn";
+    html += '<div class="' + cls + '"></div>';
+  }
+  document.getElementById("DT").innerHTML = html;
+}
+
+// ── 스텝 렌더링 ───────────────────────────────────
+function render(s) {
+  step = s;
+  rebuildSteps();       // 항상 최신 ans 기준으로 스텝 재계산
+  renderDots();
+
+  // step이 steps 범위를 벗어나면 처음으로
+  if (step >= steps.length) { step = 0; }
+  var q = steps[step];
+  if (!q) { step = 0; q = steps[0]; }
+
+  var isLast = (step === steps.length - 1);
+  var cc = q.cc;
+  var h  = '<div class="qchip" style="background:' + cc + '33;color:' + cc + '">' + q.ch + '</div>'
+          + '<h2>' + q.q + '</h2>';
+
+  if (q.id !== "budget") {
+    // 옵션 버튼 목록
+    var isCityStep = (q.id === "city");
+    h += '<div class="olist' + (isCityStep ? " grid2" : "") + '" id="OL">';
+    var opts = q.opts || [];
+    for (var i = 0; i < opts.length; i++) {
+      var o   = opts[i];
+      var sel = (ans[q.id] === o.t);
+      var bs  = sel ? "border-color:" + cc + ";background:" + cc + "22" : "";
+      var cs  = sel ? "background:" + cc + ";border-color:" + cc : "";
+      h += '<button class="ob' + (sel ? " sel" : "") + '" style="' + bs + '" data-idx="' + i + '">'
+         + '<span class="oi">' + o.e + '</span>'
+         + '<span class="ot">' + o.t + (o.s ? '<span class="os">' + o.s + '</span>' : '') + '</span>'
+         + '<span class="oc" style="' + cs + '">' + (sel ? "&#10003;" : "") + '</span>'
+         + '</button>';
+    }
+    h += '</div>';
+    h += '<button class="nb" id="NB" ' + (ans[q.id] ? "" : "disabled") + '>'
+       + (isLast ? "✈ 코스 찾기!" : "다음으로 →") + '</button>';
+  } else {
+    // 예산 슬라이더
+    var ci = ans.budget !== undefined ? ans.budget : 2;
+    var tl = ["절약 (기본 스팟만)", "알뜰 (기본 스팟만)", "추천 (선택 스팟 1개↑)", "여유 (선택 스팟 2개↑)", "프리미엄 (모든 스팟)", "프리미엄 (모든 스팟)", "프리미엄 (모든 스팟)"];
+    h += '<div class="sb">'
+       + '<div class="sd">'
+       + '<div class="sv" id="SV">' + BL[ci] + '만원</div>'
+       + '<div class="su" id="STIER">' + tl[ci] + '</div>'
+       + '</div>'
+       + '<div class="st"><span class="sl">2만</span>'
+       + '<input type="range" min="0" max="6" value="' + ci + '" oninput="onBudgetSlide(this.value)">'
+       + '<span class="sl">20만+</span></div>'
+       + '<div class="sm">' + BL.map(function(v){return"<span>"+v+"</span>";}).join("") + '</div>'
+       + '<div style="margin-top:14px;background:#fff0f5;border-radius:12px;padding:11px 14px;font-size:.79rem;color:#c06080;line-height:1.6;border-left:3px solid #ff8fab">'
+       + '💡 예산이 높을수록 스팟이 자동으로 추가돼요!</div>'
+       + '</div>';
+    h += '<button class="nb" id="NB">✈ 코스 찾기!</button>';
+  }
+
+  document.getElementById("CA").innerHTML = '<div class="qb">' + h + '</div>';
+
+  // ── 이벤트: 옵션 버튼 클릭 ──
+  var ol = document.getElementById("OL");
+  if (ol) {
+    ol.addEventListener("click", function(ev) {
+      var btn = ev.target.closest(".ob");
+      if (!btn) return;
+      var idx = parseInt(btn.getAttribute("data-idx"), 10);
+      var o2  = steps[step].opts[idx];
+      var qid = steps[step].id;
+
+      // 상위 선택이 바뀌면 하위 초기화
+      if (qid === "city")     { ans = {city: o2.t}; }
+      else if (qid === "district") { ans.district = o2.t; delete ans.vibe; delete ans.who; delete ans.budget; }
+      else if (qid === "vibe")     { ans.vibe = o2.t; delete ans.who; delete ans.budget; }
+      else                        { ans[qid] = o2.t; }
+
+      // rebuildSteps 후 같은 스텝 다시 렌더(선택 표시)
+      rebuildSteps();
+      renderDots();
+
+      // 시각 업데이트 (버튼 선택 표시)
+      ol.querySelectorAll(".ob").forEach(function(b) {
+        b.classList.remove("sel");
+        b.style.borderColor = ""; b.style.background = "";
+        var ck = b.querySelector(".oc");
+        ck.style.background = ""; ck.style.borderColor = ""; ck.innerHTML = "";
+      });
+      btn.classList.add("sel");
+      btn.style.borderColor = steps[step].cc;
+      btn.style.background  = steps[step].cc + "22";
+      var ck2 = btn.querySelector(".oc");
+      ck2.style.background  = steps[step].cc;
+      ck2.style.borderColor = steps[step].cc;
+      ck2.innerHTML = "&#10003;";
+
+      document.getElementById("NB").disabled = false;
+    });
+  }
+
+  // ── 이벤트: 다음 버튼 ──
+  document.getElementById("NB").addEventListener("click", function() {
+    rebuildSteps();
+    if (step < steps.length - 1) {
+      render(step + 1);
+    } else {
+      find();
+    }
+  });
+}
+
+function onBudgetSlide(val) {
+  var i  = parseInt(val, 10);
+  ans.budget = i;
+  document.getElementById("SV").textContent = BL[i] + "만원";
+  var tl = ["절약 (기본 스팟만)","알뜰 (기본 스팟만)","추천 (선택 스팟 1개↑)","여유 (선택 스팟 2개↑)","프리미엄 (모든 스팟)","프리미엄 (모든 스팟)","프리미엄 (모든 스팟)"];
+  document.getElementById("STIER").textContent = tl[i];
+}
+
+// ── 예산 티어 계산 ────────────────────────────────
+function getTier(bi) {
+  if (bi <= 1) return 0;
+  if (bi <= 3) return 1;
+  if (bi <= 5) return 2;
+  return 3;
+}
+
+// ── 코스 찾기 ─────────────────────────────────────
+function find() {
+  var city     = ans.city;
+  var district = ans.district || (CITY_META[city] ? CITY_META[city].districts[0] : null);
+  var vibe     = ans.vibe;
+  var who      = ans.who;
+  var bi       = ans.budget !== undefined ? ans.budget : 2;
+  var bv       = BL[bi];
+
+  var course = null;
+
+  // 1. 완전 일치
+  for (var i = 0; i < COURSES.length; i++) {
+    var c = COURSES[i];
+    if (c.city===city && c.district===district && c.vibe===vibe && c.who===who) { course=c; break; }
+  }
+  // 2. who 폴백
+  if (!course) for (var i = 0; i < COURSES.length; i++) {
+    var c = COURSES[i];
+    if (c.city===city && c.district===district && c.vibe===vibe) { course=c; break; }
+  }
+  // 3. district 폴백
+  if (!course) for (var i = 0; i < COURSES.length; i++) {
+    var c = COURSES[i];
+    if (c.city===city && c.vibe===vibe && c.who===who) { course=c; break; }
+  }
+  // 4. city+vibe
+  if (!course) for (var i = 0; i < COURSES.length; i++) {
+    var c = COURSES[i];
+    if (c.city===city && c.vibe===vibe) { course=c; break; }
+  }
+  // 5. city만
+  if (!course) for (var i = 0; i < COURSES.length; i++) {
+    if (COURSES[i].city===city) { course=COURSES[i]; break; }
+  }
+
+  if (!course) { noMatch(); return; }
+  showResult(course, city, bv, bi);
+}
+
+// ── 스팟 HTML ─────────────────────────────────────
+function stopHTML(s, isOpt, pal) {
+  var ts = TS[s.ty] || TS["activity"];
+  var costStr = "";
+  if (s.cost && s.cost > 0) {
+    costStr = " ~" + (s.cost >= 10000 ? (s.cost/10000).toFixed(s.cost%10000===0?0:1)+"만" : (s.cost/1000)+"천") + "원";
+  }
+  return '<div class="ti' + (isOpt?" opt-stop":"") + '">'
+    + '<div class="tc"><div class="tcr" style="background:' + ts.bg + '">' + s.ic + '</div>'
+    + '<div class="tl2">' + s.ti + '</div></div>'
+    + '<div class="tf">'
+    + '<div class="tty" style="color:' + ts.co + '">' + ts.lb + (isOpt?" ✨":"") + '</div>'
+    + '<div class="tn">' + s.n + '</div>'
+    + '<div class="td">' + s.d + '</div>'
+    + '<div class="tg">'
+    + s.tg.map(function(t){return'<span class="tgi">'+t+'</span>';}).join("")
+    + (s.st ? '<span class="tst" style="color:'+pal.h+'">★ '+s.st+'</span>' : "")
+    + (costStr ? '<span class="tcost">'+costStr+'</span>' : "")
+    + "</div></div></div>";
+}
+
+// 예산 tier에 따라 스팟 계산
+function getStops(course, tier) {
+  var stops = course.base_ss.slice();
+  for (var i = 0; i < course.opt_ss.length; i++) {
+    var os = course.opt_ss[i];
+    if (tier >= os.min_tier) stops.push(os.stop);
+  }
+  stops.sort(function(a,b){
+    return parseInt(a.ti.replace(":",""),10) - parseInt(b.ti.replace(":",""),10);
+  });
+  return stops;
+}
+
+// ── 예산 슬라이더 조작 (결과 화면) ───────────────
+function onAdjSlide(val) {
+  var bi   = parseInt(val, 10);
+  var tier = getTier(bi);
+  var v    = Math.round(currentBase * ML[Math.min(bi,4)] / 10000);
+
+  document.getElementById("AN").textContent = v;
+  document.getElementById("TV").textContent = v + "만원";
+  document.getElementById("AT").textContent = ATIPS[Math.min(bi,4)];
+  document.getElementById("ANC").textContent = ANOTICE[Math.min(bi,4)];
+
+  var badge = document.getElementById("AB");
+  badge.textContent  = MLBL[Math.min(bi,4)];
+  badge.style.background  = bi>2?"#fff0f3":bi<2?"#f0fff4":"#fff";
+  badge.style.color       = bi>2?"#e06080":bi<2?"#3a8a5a":"#aaa";
+  badge.style.borderColor = bi>2?"#fcd5e0":bi<2?"#caffbf":"#f0e6da";
+
+  if (!currentCourse) return;
+  var pal       = PAL[currentCourse.city] || PAL["서울"];
+  var stops     = getStops(currentCourse, tier);
+  var baseNames = currentCourse.base_ss.map(function(s){return s.n;});
+  document.getElementById("STOPS").innerHTML = stops.map(function(s){
+    return stopHTML(s, baseNames.indexOf(s.n) === -1, pal);
+  }).join("");
+}
+
+// ── 결과 화면 ─────────────────────────────────────
+function showResult(d, city, bv, bi) {
+  currentCourse = d;
+  currentBase   = d.base;
+  var pal  = PAL[city] || PAL["서울"];
+  var tier = getTier(bi);
+  var iv   = Math.round(currentBase * ML[Math.min(bi,4)] / 10000);
+
+  var stops     = getStops(d, tier);
+  var baseNames = d.base_ss.map(function(s){return s.n;});
+  var ss = stops.map(function(s){
+    return stopHTML(s, baseNames.indexOf(s.n)===-1, pal);
+  }).join("");
+
+  var bg = d.bg.map(function(b2){
+    return '<div class="brow"><div class="bl">'+b2.l+'</div><div class="bv" style="color:'+pal.h+'">'+b2.a+'</div></div>';
+  }).join("");
+  var tp = d.tips.map(function(t){
+    return '<div class="tr"><span class="tic">'+t.i+'</span><span>'+t.t+'</span></div>';
+  }).join("");
+
+  document.getElementById("R").innerHTML =
+    '<div class="rh" style="background:'+pal.bg+'">'
+    +'<span class="re">'+d.e+'</span>'
+    +'<div class="rt">'+d.t+'</div>'
+    +'<div class="rs">'+d.s+'</div>'
+    +'<div class="rm">'+d.b.map(function(x){return'<span class="rc">'+x+'</span>';}).join('')
+    +'<span class="rc">📍 '+city+'</span>'
+    +'<span class="rc">💰 '+bv+'만원</span></div></div>'
+    +'<div class="rw" style="background:'+pal.bg+'"><svg viewBox="0 0 480 32" preserveAspectRatio="none" fill="#fff9f5"><path d="M0,32 L0,16 Q60,0 120,16 Q180,32 240,16 Q300,0 360,16 Q420,32 480,16 L480,32 Z"/></svg></div>'
+    +'<div class="rb">'
+    +'<div class="sh"><span class="sn" style="background:'+pal.h+'">01</span>오늘의 코스</div>'
+    +'<div class="tl" id="STOPS">'+ss+'</div>'
+    +'<div style="margin-top:10px;background:#fff0f5;border-radius:12px;padding:11px 14px;font-size:.78rem;color:#c06080;line-height:1.6;border-left:3px solid #ff8fab">✨ 아래 슬라이더를 조절하면 스팟이 자동으로 추가/삭제돼요!</div>'
+    +'<div class="sh"><span class="sn" style="background:'+pal.h+'">02</span>예산 조절</div>'
+    +'<div class="bc"><div class="bgr">'+bg+'</div>'
+    +'<div class="adj">'
+    +'<div class="adj-title">💰 예산 실시간 조절 · 스팟 자동 추가/삭제</div>'
+    +'<div class="adj-display">'
+    +'<div class="adj-num-wrap"><span class="adj-num" id="AN">'+iv+'</span><span class="adj-unit">만원</span></div>'
+    +'<span class="adj-badge" id="AB">기준</span></div>'
+    +'<div class="adj-track"><span class="adj-lbl">절약</span>'
+    +'<input class="adj-slider" type="range" min="0" max="6" value="'+bi+'" oninput="onAdjSlide(this.value)">'
+    +'<span class="adj-lbl">프리미엄</span></div>'
+    +'<div class="adj-marks"><span>2만</span><span>3만</span><span>5만</span><span>7만</span><span>10만</span><span>15만</span><span>20만+</span></div>'
+    +'<div class="adj-tip" id="AT">'+ATIPS[Math.min(bi,4)]+'</div>'
+    +'<div class="adj-notice" id="ANC">'+ANOTICE[Math.min(bi,4)]+'</div></div>'
+    +'<div class="btot"><span class="btot-lbl">💳 예상 합계</span><span class="btot-val" id="TV">'+iv+'만원</span></div></div>'
+    +'<div class="sh"><span class="sn" style="background:'+pal.h+'">03</span>꿀팁</div>'
+    +'<div class="tp">'+tp+'</div>'
+    +'<button class="rbtn" onclick="restart()">↺ 다른 코스 찾기</button></div>';
+
+  document.getElementById("R").classList.add("on");
+  document.getElementById("Q").classList.remove("on");
+  window.scrollTo(0,0);
+}
+
+function noMatch() {
+  document.getElementById("R").innerHTML =
+    '<div style="padding:40px 20px"><div class="nm">'
+    +'<div style="font-size:3rem;margin-bottom:12px">🗺️</div>'
+    +'<h3 style="font-family:Jua,cursive;font-size:1.3rem;margin-bottom:8px">딱 맞는 코스를 못 찾았어요</h3>'
+    +'<p style="font-size:.82rem;color:#aaa;line-height:1.7">다른 조건으로 다시 시도해보세요!</p>'
+    +'<button class="rbtn" style="margin-top:18px" onclick="restart()">↺ 다시 찾기</button>'
+    +'</div></div>';
+  document.getElementById("R").classList.add("on");
+  document.getElementById("Q").classList.remove("on");
+}
+
+function restart() {
+  step=0; currentCourse=null; currentBase=0; ans={}; steps=[];
+  document.getElementById("R").classList.remove("on");
+  document.getElementById("R").innerHTML = "";
+  document.getElementById("Q").classList.add("on");
+  render(0);
+  window.scrollTo(0,0);
+}
+
+render(0);
+</script>
+</body>
+</html>
